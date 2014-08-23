@@ -202,11 +202,15 @@ Finally, we conclude our arguments in Section \ref{sec:conc}.
 \section{Related Work / Literature Review} 
 \label{sec:lit}
 Security is the prime concern in the path to socialising the WSN technology.
-Due to its applicability in wide variety of purposes, keeping it secure is a challenging task.
+Due to its applicability in wide variety of purposes, keeping WSNs secure is a challenging task.
 WSNs do not have any session or presentation layer.
 Security techniques designed for MANETs are not readily applicable in WSN for its constraints like small processing capability, low battery life, small memory.
-Many security schemes for WSN have been proposed targeting two approaches.%to solve the security problems mainly using 
+various possible attacks on WSNs has been explained by   \cite{roosta2006taxonomy}, \cite{roosta2008attacks}.
+On the other hand, WSN security design and analysis suggests many techniques to address them.
+Many security schemes for WSN have been proposed targeting two main approaches - using cryptography and using IDS.%to solve the security problems mainly using 
 Cryptographic approach actively aims to protect privacy, ensure authenticity, data integrity and confidentiality through use of cryptographic keys and algorithms, policies and procedures.
+While symmetric key cryptographic techniques are more efficient in required resources, they suffer from a shortcoming that the key must be shared for being useful. 
+However, asymmetric key cryptography is free from this limitation with a greater consumption of resources.
 Anomaly detection, on the other hand, is a passive security measure that monitors the behaviour from a observer's point of view and aims to alert a suitable entity for further actions.
 
 Symmetric key cryptographic techniques are useful when both the secret key and the algorithm remains unknown, which can be difficult due to the fact that the WSN is expected to be deployed in exposed environment. Yet, most security schemes in WSN use the technique due to ease of hardware implementation, small computation, power and memory requirements. 
@@ -235,7 +239,7 @@ TinyOS implemented Skipjack algorithm with the CBC mode in TinySec, which has be
 There are security issues with use of cryptography in WSN due to the nature of the hardware \cite{1710}.
 Encryption significantly increases energy and decreases packet throughput.
 In many cases, authentication is more desirable than encryption; but encryption is typically the standard method for authentication.
-Absence of session and presentation layers complicates the design security protocols. 
+Absence of session and presentation layers complicates the design security protocols.  %Released in September 2007 as part of HART 7 specifications
 Moreover, WSNs do not have gateways or switches that can enable monitoring of the information flow.
 Hence, in case of failure from cryptographic measures, intrusions need to be detected before or after attackers have succeeded in breaching the WSN. 
 
@@ -262,10 +266,11 @@ Software update in a WSN is a vulnerable process from security point of view.
 While cryptography  is an algorithmic  tool designed to verify authenticity and ensure security, IDSs  monitor anomaly in network behaviour  and raises alarm. 
 There are other IDSs that initiate  countermeasure process also, in addition to monitoring and raising alarm. 
 Cryptography and monitoring both work in collaboration with each other and are intended to ensuring security and protect  against intrusion.
-Despite these efforts, WSN passes through a vulnerable phase during the software update process due to the fact that there is a significant increase in traffic owing to software update process.
-When a software update in WSN takes place, it in reality replaces the executing embedded operating system and running application as a package.
-Cryptographic measures and IDS running in the local sensors are deactivated or unavailable for a window in time.
-Therefore, there is a need for an additional layer of security measures that must observe the update behaviour. 
+Despite these efforts, WSN passes through a vulnerable phase during the software update process due to the fact that the running operating system and application needs to switch from old version to the new ones and there is a significant increase in traffic owing to software update process.
+There are high number of transmitted packets in the network that uses huge network bandwidth, thereby depletes sessor energy.
+When a software update in WSN takes place, it replaces the executing embedded operating system and running application as a package.
+Cryptographic measures and IDS running in the local sensors are deactivated or unavailable, which open up a vulnerable  window in time when it is easy for an intruder due to the transition.
+Therefore, this is a special case from security point of view and must be dealt with specific measures like an additional layer of security measures that must observe the update behaviour. 
 
 %%%%%%%%%%%These MANET IDSs cannot be implemented in WSN ref http://ieeexplore.ieee.org/xpl/articleDetails.jsp?arnumber=6517052
 % % Wrong effort {wasted??}
@@ -305,9 +310,6 @@ Therefore, there is a need for an additional layer of security measures that mus
 %\cite{6785489} proposes a post-deployment pairwise key distribution scheme for two-tier sensor networks that builds a special tree structure for generating the addresses for the nodes in the network, generates pair-wise keys shared with neighbour nodes. The author contends that the scheme has fewer security overheads, uses little memory to store the keys, and has smaller computation overhead, and is strongly resilient against the node capture attack.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
-%What are the update technologies available?
-%What are the update protocols available?
-Several network data dissemination protocols have been implemented in different sensor/embedded systems operating systems.
 %%%COMMENT
 %%We can also talk about this protocols if space permits
 %% Some sensor network applications, such as Tiny Diffusion[8], Maté [12], and TinyDB [17], use concise, high-level virtual code representations to reduce this cost.
@@ -317,67 +319,57 @@ Several network data dissemination protocols have been implemented in different 
 %%Multi-hop Over-the-Air Programming = T. Stathopoulos, J. Heidemann, and D. Estrin. A remote code update mechanism for wireless sensor networks. Technical report, UCLA, Los Angeles, CA, USA, 2003.
 %%Infuse S. S. Kulkarni and M. Arumugam. INFUSE: A TDMA based data dissemination protocol for sensor networks. Technical report, Michigan State Univ., East Lansing, MI, USA, 2004.
 
-All the OTA software update protocols are targeted at attaining efficiency, throughput and conserve energy.
-In addition to these features, deluge has been enhanced to handle security that we have elaborately discussed in section \cite{sec:del}.
-In Trickle, which is a well-known OTA update protocol, the motes periodically advertise their own running code version to the neighbours. 
-When a neighbour listens to an older version, it disseminates the updated code. 
-The Trickle algorithm controls the rate of transfer instead of flooding the network \cite{ISI:000221664800002}.% scalable multicast, and wireless broadcast literature
-On the other hand, Deluge, (which is) an improvement over Trickle,  divides the program image into pages that are further split into packets while in transition. 
-Instead of nodes autonomously advertising its own version like Trickle, the nodes periodically advertise the newest pages (only the ones changed from prior version) available to send. 
-Other nodes then request the required pages following a sequential order \cite{1031506}.
-Another OTA update protocol, Multihop Network Programming (MNP) is an enhancement over Trickle or Deluge in a way that is more efficient in image transfer using `pipelining' to enable faster data propagation and also in terms of energy.
-MNP handles the problems that occur from message collision and hidden terminal using a greedy approach of sender selection algorithm to guarantee that at a time, there is at most one programme transmitting source  in a neighbourhood. 
-MNP  \cite{Kulkarni:2005:MMN:1068511.1069352}.
-While the above mentioned reprogramming protocols  are either unsuitable or inefficient in a mobile environment, ReMo does not make any assumptions on the location of nodes and suggests an energy efficient, multihop reprogramming protocol for mobile WSNs.
-ReMo is based on a periodic metadata broadcast paradigm whose probability is dynamically adjusted based on neighbour density and pages are transferred out of order based on availability which in turn depends on high potential of code availability, not link quality alone \cite{ISI:000271540300007}.
-Comparison of code update completion time of different protocols indicates that while Deluge performs moderately, MNP is the fastest among them.
-Typhoon also reliably delivers large objects to all nodes using a combination of spatially-tuned timers, prompt retransmissions, and frequency diversity  and has the benefits of reduced dissemination time and energy consumption by up to three times \cite{liang2008typhoon}.
+
 %%Existing Gaps in works: 
 %Modelling of data/malware propagation over dissemination protocols (especially in mobile sensor networks)
 %Reprogramming protocol in mobile WSN
 %Performance analysis in mobile scenario[Markov Chain based model, MAC analysis in 802.11, derive throughput of delivery] 
 
-None of these OTA reprogramming systems support a cryptographically-strong, public key-based system for source authentication and integrity verification. 
-Deluge has been enhanced to use on-chip hardware based AES-128 encryption, which does not completely protect a WSN.
-The program binary authentication technique using a hash is not very useful in to resource-constrained sensors. 
-%Our solution to the secure programming problem leverages authenticated streams, is consistent with the limited resources of a typical sensor node, and can be used to secure existing network programming systems. 
-%Under our scheme, a program binary consists of several code and data segments that are mapped to a series of messages for transmission over the network. 
+
+%%Our solution to the secure programming problem leverages authenticated streams, is consistent with the limited resources of a typical sensor node, and can be used to secure existing network programming systems. 
+%%Under our scheme, a program binary consists of several code and data segments that are mapped to a series of messages for 
+Several network data dissemination protocols have been implemented in different sensor/embedded systems operating systems.
+All the OTA software update protocols are targeted at attaining efficiency, throughput and conserve energy.
+None of these OTA reprogramming systems incorporates a cryptographically-strong, public key-based security system for source authentication and integrity verification. 
 Limitations of various techniques that can be used in WSN reprogramming has been elaborated in \cite{1127826}. 
-%There has been propositions of technique, named s
-Conversely, Secure Deluge uses digitally signed initial advertisement, which in turn authenticates the following messages in a chained fashion much like the CBC methods used in public key cryptography.
-Secure deluge uses digital signatures for codes signing and authenticated broadcast scheme. 
+The program binary authentication technique using a hash is not very useful in to resource-constrained sensors. 
+Deluge has been enhanced to handle security that we have elaborately discussed in section~\ref{sec:del}. 
+Deluge uses digital signatures for codes signing and authenticated broadcast scheme. 
+It also incorporates digitally signed initial advertisement, which in turn authenticates the following messages in a chained fashion much like the CBC methods used in public key cryptography.
 However, we contend that it is possible for a malicious intruder to replicate an authentic image source and advertise new programme version which the motes cannot repudiate. 
-
-
-Cryptography cannot completely prevent attacks on WSNs confidentiality, authenticity, availability due to resource limitation.
-Due to constrained computational capacity and resources, it is possible to compromise the cryptographic measures incorporated in the implemented WSN operating systems.
+Even though,  Deluge incorporates on-chip hardware based AES-128 encryption,
+Cryptography cannot completely prevent attacks.%on WSNs confidentiality, authenticity, availability due to resource limitation.
+Constrained computational capacity and resources make it possible to compromise the cryptographic measures incorporated in the implemented WSN operating systems.
 The other vulnerability of such epidemic protocol is breach at any one point does the job of weakening the whole network for the attacker. 
 It is possible for him to appear somewhere in the network, pretend to be an authentic source and disappear after successful transfer of the complete image to only one of the motes in the network. 
-The security mechanisms provided by TinyOS and Secure Deluge would be unable to detect the initial breach in such cases and would allow the network to be flooded by a totally new version of the application that performs completely defferent function \cite{Karlof:2004:TLL:1031495.1031515}.
+The security mechanisms provided by Deluge would be unable to detect the initial breach in such cases and would allow the network to be flooded by a totally new version of the application that performs completely different function \cite{Karlof:2004:TLL:1031495.1031515}.
 While the reprogramming protocols are essential for the WSNs, they could act as carriers of rapid spread of malicious code in the network.
 Hence, we propose an analytical tool that can have valuable insight into the propagation characteristics of OTA reprogramming protocol. 
 The tool should be flexible for comparative studies of different protocols. 
 
+There is no previous works available that targets to secure update process using an IDS.
+The security countermeasures available in WSN systems is predominately cryptographic.
+None of the well-known WSN operating systems have ever incorporated an IDS due to the reality that such an employment would cut down on the resources, especially power.
+An IDS residing on the sensors is ideally need to be avoided by design.
 
-Features, advantages and disadvantages of the protocols.
+Hence,we propose an IDS that can primarily be applied on OTA protocol.
+The technique has been tested successfully on Deluge.
+We have exploited services from other existing standard protocols a to gather timing information outside the WSN and then process the timing information for intrusion detection.
+Use of timing analysis approach is a new technique in IDS for WSN.
+The technique may further be extended for use with broad range of intrusion detection motives specially in WSN and also in MANET.
+The technique is centrally controlled, resides outside the WSN, gathers processed information from the sensors in WSN.
+However, an IDS with that broad spectrum is out of scope of this paper.
+We shall limit ourselves within its application on WSN, specifically on Deluge only.
+Before one understands how the IDS works and is able to focus on its  mechanism, one needs some prior knowledge about Deluge and its security techniques.
 
-Comparison among protocols, similarities and contrasts.
 
-
-
-
-
-
- literature explains various possible attacks on WSNs \cite{roosta2006taxonomy}, \cite{roosta2008attacks}.
-On the other hand, WSN security design and analysis suggests many techniques to address them.
-WHAT ARE SUCH SCHEMES???
+ADDITIONAL NOTES TO BE INCORPORATED or DISCARDED
+% Features, advantages and disadvantages of the protocols.
+% Comparison among protocols, similarities and contrasts.
 
 %Limitations of Current Schemes
 Most of the solutions are context specific and are vulnerable depending on its application.
 The assumptions made on the corresponding threats may be inconsistent with the problem domain and attempts to address unrealistic problems.
-
-
-
 
 %Are you sure that a solution can be found within time available? How do you know?
 WSN have limitations in computing resources, memory and physical security. 
@@ -385,43 +377,70 @@ Even after stringent security implementation, it cannot overcome security threat
 Sensor nodes use wireless communication, which is particularly easy to eavesdrop on. Similarly, an attacker can easily inject malicious messages into the wireless network.\\
 
 
-
-
-
 \cite{ioannis2007towards} suggests a distributed approach in which nodes do not have a global view, monitor their neighbourhood and collaborate with their nearest neighbours for their normal operational condition, yet can detect an intrusion against blackhole and selective forwarding attacks.
 \cite{sen2010efficient} proposes a mechanism based on trust that uses node localisation, density of the WSN, collaborative sensing, cryptographic techniques  and focuses on misbehaviour characterisation and behaviour monitoring to build a `Reputation Table' for each node . However, the mechanism have assumptions about motives of the adversary, symmetric links, nodes  are not compromised or faulty at the time of bootstrapping. 
-
-
-
-
-
 
 \cite{Zhu:2007:IHA:1267060.1267062} proposes a guaranteed interleaved hop-by-hop authentication schemes for detection of injected false data immediately when no more than t nodes are compromised, where t is a system design parameter. 
 
 
 
 
-\section{Deluge \& Intrusion}
+\section{Deluge} % \& Intrusion}
 \label{sec:del}
 
-What is deluge?
-Jonathan Hui implemented the original protocol (as per the paper). The 2.x
-implementation was by Johns Hopkins, especially Razvan (now at Google).
-Mechanism how it works?
+%What are the update technologies available?
+%What are the update protocols available?
+Reprogramming of the sensors in a WSN is one of the most important management task.
+Performing the task manually may work out for a small no of sensors, but this is not a scalable idea.
+Hence automatic OTA reprogramming of sensors becomes an important issue.
+While some of the protocols designed for OTA reprogramming deals with a subset of motes, most others necessarily update the whole network at one go resulting into all motes in the WSN running same version of the software.
+The subset reprogramming allows the same WSN to preferentially perform different tasks, which is a convenience and again increases management overhead.
+% XNP  [4]	Program	CSMA	One	 \cite{xnp}
+% Incremental  [15]	Patch	CSMA	One	No	No  \cite{1381899}
+% Trickle  [19]	Script	CSMA	Multi	No	No \cite{ISI:000221664800002}
+% Deluge  [13]	Program	CSMA	Multi	No	Yes \cite{1031506}
+% MNP  [17]	Program	CSMA	Multi	No	Yes \cite{Kulkarni:2005:MMN:1068511.1069352}
+% Sprinkler  [22]	Program	TDMA	Multi	Yes	No \cite{4212092}
+% Firecracker  [18]	Program	CSMA	Multi	Yes	No \cite{Levis:2004:FP:1133572.1133589}
+In Trickle, which is a well-known OTA update protocol, the motes periodically advertise their own running code version to the neighbours. 
+When a neighbour listens to an older version, it disseminates the updated code. 
+The Trickle algorithm controls the rate of transfer instead of flooding the network \cite{ISI:000221664800002}.% scalable multicast, and wireless broadcast literature
+Another OTA update protocol, Multihop Network Programming (MNP) is an enhancement over Trickle or Deluge in a way that is more efficient in image transfer using `pipelining' to enable faster data propagation and also in terms of energy.
+MNP handles the problems that occur from message collision and hidden terminal using a greedy approach of sender selection algorithm to guarantee that at a time, there is at most one programme transmitting source  in a neighbourhood. 
+MNP  \cite{Kulkarni:2005:MMN:1068511.1069352}.
+While the above mentioned reprogramming protocols  are either unsuitable or inefficient in a mobile environment, ReMo does not make any assumptions on the location of nodes and suggests an energy efficient, multihop reprogramming protocol for mobile WSNs.
+ReMo is based on a periodic metadata broadcast paradigm whose probability is dynamically adjusted based on neighbour density and pages are transferred out of order based on availability which in turn depends on high potential of code availability, not link quality alone \cite{ISI:000271540300007}.
+Comparison of code update completion time of different protocols indicates that while Deluge performs moderately, MNP is the fastest among them.
+Typhoon also reliably delivers large objects to all nodes using a combination of spatially-tuned timers, prompt retransmissions, and frequency diversity  and has the benefits of reduced dissemination time and energy consumption by up to three times \cite{liang2008typhoon}.
+MOAP-SW allows a subset of the network to be programmed efficiently \cite{Maia20131277}.
 
-Deluge provides an efficient method for disseminating large data objects, such as program binaries, to many nodes within a wireless sensor network. Combining this mechanism with a bootloader and command dissemination allows for the wireless programming of nodes. The following features are included with Deluge:
 
-Multihop support: Wirelessly program all nodes in a multihop network without touching your nodes.
-Epidemic propagation: Continuous propagation effort by all nodes helps ensure reachability of those nodes with intermittent connectivity.
-Redundant data integrity checks: Overlapping CRC calculations to help ensure integrity of program images at all nodes.
+%In this section,we describe Deluge protocol.
+Deluge is an efficient and reliable protocol for disseminating large data objects, such as program binaries that are larger than sensor memory \cite{1031506}. 
+Combining the mechanism with bootloader  allows programming the wireless nodes over the air.
+Deluge has been implemented in TinyOS and later ported on Contiki, bothare prominent WSN open source operating systems.
+%TinyOScomponent-based operating system and platform targeting wireless sensor networks (WSNs). TinyOS is an embedded operating system written in the nesC programming language as a set of cooperating tasks and processes.
+%Contiki is an open source operating system for the Internet of Things. Contiki %connects tiny low-cost, low-power microcontrollers to the Internet. 
+The original protocol was implemented at Barkley by Jonathan Hui. % Now in CISCO
+The later version Deluge 2.x was implementation at Johns Hopkins notably by Razvan, who is also credited with secure design of the protocol and author of another OTA protocol Typhoon. %  (now at Google).
+Deluge, (which is) an improvement over Trickle,  divides the program image into pages that are further split into packets while in transition. 
+Instead of nodes autonomously advertising its own version like Trickle, the nodes periodically advertise the newest pages (only the ones changed from prior version) available to send. 
+Other nodes then request the required pages following a sequential order \cite{1031506}.
+
+Deluge is characterised by following:
+\begin{itemize}
+\item Multihop support: Wirelessly program all nodes in a multihop network without touching your nodes.
+\item Epidemic propagation: Continuous propagation effort by all nodes helps ensure reachability of those nodes with intermittent connectivity.
+\item Redundant data integrity checks: Overlapping CRC calculations to help ensure integrity of program images at all nodes.
 Store multiple program images: With each node storing multiple program images, quickly switch your network between different programs without continuous downloading.
-Golden image: A program image with minimal support for network programming stored in a safe location on external  flash. Always have a piece of code that will allow for recovery.
-Isolated bootloader: A piece of code that is guaranteed to execute after each reset independent of the TinyOS application. The bootloader is responsible for programming the microcontroller and recovers from programming errors by loading the Golden Image.
+\item Golden image: A program image with minimal support for network programming stored in a safe location on external  flash. Always have a piece of code that will allow for recovery.
+\item Isolated bootloader: A piece of code that is guaranteed to execute after each reset independent of the TinyOS application. The bootloader is responsible for programming the microcontroller and recovers from programming errors by loading the Golden Image.
+\end{itemize}
 
-How does deluge handle security?
+How does Deluge handle security?
 \cite{1127826}
-% title = {Securing the deluge Network programming system},
-% http://www.cs.berkeley.edu/~jwhui/pubs/ipsn06-securedeluge.pdf
+% title = {Securing the Deluge Network programming system},
+% http://www.cs.berkeley.edu/~jwhui/pubs/ipsn06-secureDeluge.pdf
 
 
 \section{Design and Implementation}
