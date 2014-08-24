@@ -468,7 +468,7 @@ A node in \textit{receive} actively requests remaining packets required to compl
 Packets needed to complete a certain page are saved without any regard to its state.
 A node in \textit{transmission} broadcasts all requested packets from a given page in round-robin order with an aim of achieving fairness.
 
-\sunsection{Security of Deluge}
+\subsection{Security of Deluge}
 The original Deluge protocol did not consider security of operations.
 Security of Deluge was mainly suggested by \cite{1127826} in the form of solution to following problems:
 \begin{itemize}
@@ -489,9 +489,33 @@ Use of hash function that binds later packets is a kind of digital signature by 
 % title = {Securing the Deluge Network programming system},
 % http://www.cs.berkeley.edu/~jwhui/pubs/ipsn06-secureDeluge.pdf
 
+\subsection{Security Vulnerability of Deluge}
+Deluge security measures are not conclusive to this assertion that it can completely resent security threats. 
+An adversary may employ  the suppression to prevent the update propagation, waste network resources, disrupt the normal operation of code dissemination. 
+He may even be able to inject malicious codes to pollute the network and deny intended function.
+
+Advertisements are not authenticated, any node in the WSNs may advertise any message. So an adversary can 
+launch several attacks on Deluge by injecting bogus or modified advertisement packets 
+
+%adversary can personate a source to inject an  unexpectable or harmful code image into a WSN
+
+%Forge the version number of a code image in the advertisement packet
+%In order to exhaust the energy of a node, a malicious node may continuously request the same pages or unwanted pages from a normal node to trigger the transmission of code data packets.
+
 
 \section{Design and Implementation}
+
+We perform a comprehensive evaluation of mote update time.
+The time at which a new data object is delivered to the mote and 
+[You're not being precise about what type of update this is. It's a software update, and the time is the time to complete the verified propagation of that software update. (I think?)]
+using an OTA [Abbreviation should be used first alongside their expansions ... although this one may well occur earlier in the thesis, of course...]
+protocol like Deluge.
+Measurement of the update time has been simulated on different topologies. 
+Using different topologies provides us with topological diversity which is at par with the 
+randomness that is expected in a real-world WSN deployment.[Some are random, some aren't: I'm not sure that those contexts can be intermixed ...]
+Study of different topologies is a structured way of studying such deployments
 \label{sec:deg}
+
 
 \subsection{Identification Requirement}
 
@@ -526,7 +550,7 @@ keys may be exposed to the attacker. These cryptographic
 keys may allow the compromised nodes to rejoin the
 network later and becomeinternal/insider attackers. These
 internal attackers can establish secure channels even with
-uncompromised nodes. We call internal attacker nodes that
+uncompromising nodes. We call internal attacker nodes that
 send out invalid data packets or corrupt data packets in
 transitpolluters.
 Pollution attacks are the focus of this paper. Attacks on
