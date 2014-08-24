@@ -330,7 +330,7 @@ Therefore, this is a special case from security point of view and must be dealt 
 %%Under our scheme, a program binary consists of several code and data segments that are mapped to a series of messages for 
 Several network data dissemination protocols have been implemented in different sensor/embedded systems operating systems.
 All the OTA software update protocols are targeted at attaining efficiency, throughput and conserve energy.
-None of these OTA reprogramming systems incorporates a cryptographically-strong, public key-based security system for source authentication and integrity verification. 
+The  OTA reprogramming systems, in general, do not provide cryptographic protection for source authentication, integrity verification and likewise. 
 Limitations of various techniques that can be used in WSN reprogramming has been elaborated in \cite{1127826}. 
 The program binary authentication technique using a hash is not very useful in to resource-constrained sensors. 
 Deluge has been enhanced to handle security that we have elaborately discussed in section~\ref{sec:del}. 
@@ -390,6 +390,8 @@ Sensor nodes use wireless communication, which is particularly easy to eavesdrop
 
 %What are the update technologies available?
 %What are the update protocols available?
+
+\subsection{Popular OTA Protocols}
 Reprogramming of the sensors in a WSN is one of the most important management task.
 Performing the task manually may work out for a small no of sensors, but this is not a scalable idea.
 Hence automatic OTA reprogramming of sensors becomes an important issue.
@@ -404,7 +406,8 @@ The subset reprogramming allows the same WSN to preferentially perform different
 % Firecracker  [18]	Program	CSMA	Multi	Yes	No \cite{Levis:2004:FP:1133572.1133589}
 In Trickle, which is a well-known OTA update protocol, the motes periodically advertise their own running code version to the neighbours. 
 When a neighbour listens to an older version, it disseminates the updated code. 
-The Trickle algorithm controls the rate of transfer instead of flooding the network \cite{ISI:000221664800002}.% scalable multicast, and wireless broadcast literature
+Trickle addresses single packet dissemination and uses suppression and dynamic adjustment of the broadcast rate to limit transmissions among neighboring nodes.
+The Trickle algorithm controls the rate of transfer by suppressing a motes own broadcast  instead of flooding the network \cite{ISI:000221664800002}.% scalable multicast, and wireless broadcast literature
 Another OTA update protocol, Multihop Network Programming (MNP) is an enhancement over Trickle or Deluge in a way that is more efficient in image transfer using `pipelining' to enable faster data propagation and also in terms of energy.
 MNP handles the problems that occur from message collision and hidden terminal using a greedy approach of sender selection algorithm to guarantee that at a time, there is at most one programme transmitting source  in a neighbourhood. 
 MNP  \cite{Kulkarni:2005:MMN:1068511.1069352}.
@@ -415,6 +418,7 @@ Typhoon also reliably delivers large objects to all nodes using a combination of
 MOAP-SW allows a subset of the network to be programmed efficiently \cite{Maia20131277}.
 
 
+\subsection{Deluge Protocol}
 %In this section,we describe Deluge protocol.
 Deluge is an efficient and reliable protocol for disseminating large data objects, such as program binaries that are larger than sensor memory \cite{1031506}. 
 Combining the mechanism with bootloader  allows programming the wireless nodes over the air.
@@ -427,18 +431,61 @@ Deluge, (which is) an improvement over Trickle,  divides the program image into 
 Instead of nodes autonomously advertising its own version like Trickle, the nodes periodically advertise the newest pages (only the ones changed from prior version) available to send. 
 Other nodes then request the required pages following a sequential order \cite{1031506}.
 
-Deluge is characterised by following:
-\begin{itemize}
-\item Multihop support: Wirelessly program all nodes in a multihop network without touching your nodes.
-\item Epidemic propagation: Continuous propagation effort by all nodes helps ensure reachability of those nodes with intermittent connectivity.
-\item Redundant data integrity checks: Overlapping CRC calculations to help ensure integrity of program images at all nodes.
-Store multiple program images: With each node storing multiple program images, quickly switch your network between different programs without continuous downloading.
-\item Golden image: A program image with minimal support for network programming stored in a safe location on external  flash. Always have a piece of code that will allow for recovery.
-\item Isolated bootloader: A piece of code that is guaranteed to execute after each reset independent of the TinyOS application. The bootloader is responsible for programming the microcontroller and recovers from programming errors by loading the Golden Image.
-\end{itemize}
+Deluge solves several problems in network programming. 
+It deals with larger program image or data objects, mostly much larger than the memory (RAM) available in a sensor.
+It works on an environment where node density is variable to the extent that includes assymentric links as well.
+It displays reliable behaviour by correcting packets in environment that is characterised by high packet loss rate.
+Deluge ensures that all the nodes remain updated with the latest software version.
+In cases when a node missed several updates and needs to update its state to the very newest version, it can do so without requiring to go through the missed updates.
+The protocol ensures quick propagation of program codes and requires minimum service interruption. 
 
-How does Deluge handle security?
-\cite{1127826}
+Deluge displays few prominent characteristics that make it prominent.
+It transfers complete binary image when it is necessary to do so. 
+It disseminates a program, image from one or more sources to many nodes over multi-hop WSN.
+The density aware epidemic property achieves reliability in the unpredictable wireless medium.
+The epidemic protocol works on a state machine principle and follows few local rules that ultimately achieves global behaviour.
+Deluge allows the sensor to store multiple program images in its flash memory, one of them is identified as golden image which is able to run with minimal support in case of a failure.
+Deluge can work in conjunction with a isolated bootloader to switch from running image to a newer one.
+The protocol achieves high performance due to its three-phase handshaking technique, robust support for asymmetric links and density aware mechanism that supresses redundant advertise messages and requests. 
+
+To represent large data objects, Deluge splits in into fixed size pages.
+Pages are basic data transfer objects which are further split into fixed no of packets for wireless transmission.
+Both pages and packets use 16bit CRC for integrity and data correctness.
+
+The deluge mechanism is simple yet interesting. 
+Each node periodically advertises its version no and summary of software/data object.
+Version no is used to differentiate between updates and is chronologically increased for each subsequent updates.
+Nodes in the neighbourhood can determine from this advertisement if any of its neighbours have an old profile. 
+Nodes listening to such advertisements suppresses their own advertisement if it has the same version of software; however, if it has a newer version then responds with its object profile.
+This is done in a fashion that can be termed as controlled flood.
+The nodes with older data object then determines which portion of data it needs updating and requests it from any neighbour it can reach.
+It works through a three-phase handshaking (advertise-request-updates) protocol which is helpful in a lossy environment to achieve reliability. 
+Node with an old profile requests for the new page and switches to new \textit{receive} mode.
+However, the neighbouring nodes which require the update can take advantage by receiving the same page without entering into a contention for requesting. 
+The nodes utilise pipelining to increase throughput by working on completed pages before all pages in the image are complete.
+
+A node in \textit{receive} actively requests remaining packets required to complete a page. After making a request, the mote waits for response. However, a node need not be in \textit{receive} mode in order to receive data packets.
+Packets needed to complete a certain page are saved without any regard to its state.
+A node in \textit{transmission} broadcasts all requested packets from a given page in round-robin order with an aim of achieving fairness.
+
+\sunsection{Security of Deluge}
+The original Deluge protocol did not consider security of operations.
+Security of Deluge was mainly suggested by \cite{1127826} in the form of solution to following problems:
+\begin{itemize}
+\item	Authentication of program binary ensures that the transferred program image is from its author and has not been forged. This is usually done by signing and verifying the data stream.
+\item	Verification of data integrity ensures that the binary was not changed during transit and if there was a change then it is detected by the recipient. 
+\item 	System freshness ensures that older programs cannot overwrite the newer ones.
+\end{itemize}
+Since size of the entire program, page and packets are known before a transmission takes place, the program can be split into messages, each message contains a cryptographic hash of the next message and digitally sign the head of hash message.
+It suggested to use a particular implementation of RSA signature and SHA-1 hashes.
+However, the RSA signature technique has not been implemented, instead AES-128 based symmetric key has been chosen, as we have mention beforehand. 
+Use of hash function that binds later packets is a kind of digital signature by the base-station, and  facilitates authentication \cite{1127826}.
+%However, the literature suggested several potential security and performance  improvement of the Deluge protocol.
+%Select a linear set of nodes thorugh 
+
+
+%How does Deluge handle security? 
+
 % title = {Securing the Deluge Network programming system},
 % http://www.cs.berkeley.edu/~jwhui/pubs/ipsn06-secureDeluge.pdf
 
@@ -464,6 +511,30 @@ How does Deluge handle security?
 
 What are the security aspects it does not handle?
 Why does not it handle them?
+
+An attacker is computationally bounded. This is a standard
+cryptographic assumption, implying even if the attacker has
+access to supercomputers, its computing power is at most
+polynomial. Most key management schemes in the WSN
+literature are built on this assumption.
+The base station is the only trusted entity in the network.
+An attacker may introduce its own nodes in a network,
+or it may capture, compromise, and reintroduce existing
+nodes in the network, as sensor nodes are generally not
+tamper-resistant. When a node is captured, its cryptographic
+keys may be exposed to the attacker. These cryptographic
+keys may allow the compromised nodes to rejoin the
+network later and becomeinternal/insider attackers. These
+internal attackers can establish secure channels even with
+uncompromised nodes. We call internal attacker nodes that
+send out invalid data packets or corrupt data packets in
+transitpolluters.
+Pollution attacks are the focus of this paper. Attacks on
+the physical layer (e.g., jamming), data link layer (e.g., smart
+jamming), or network layer (e.g., packet dropping) are not
+considered, because countermeasures against these attacks
+are considered complementary to this work.
+
 
 
 %They exhibit highly transient loss patterns that are susceptible to changes in environmental conditions [21]. Asymmetric links are common, and prior work has shown network behavior to often be worse indoors than out, predominantly due to multi-path effects [22]. 
