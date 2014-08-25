@@ -505,11 +505,15 @@ launch several attacks on Deluge by injecting bogus or modified advertisement pa
 
 \section{Design and Implementation}
 
+%Research Question
+Is it possible to detect malicious software updates applied using over the air update protocol (especially Deluge) with multihop sensor networks using timing analysis approach?
+We hypothesize that it is possible to detect intrusion by analysing the timing of the software update of the motes in WSN.
+The pattern generated from the analysis is dependent on relative physical position of the motes and time of update.
+
 We perform a comprehensive evaluation of mote update time.
-The time at which a new data object is delivered to the mote and 
-[You're not being precise about what type of update this is. It's a software update, and the time is the time to complete the verified propagation of that software update. (I think?)]
-using an OTA [Abbreviation should be used first alongside their expansions ... although this one may well occur earlier in the thesis, of course...]
-protocol like Deluge.
+After a new data object is delivered to the mote and the mote uses the bootloader to start running the new data object is the time we are interested in.
+%[You're not being precise about what type of update this is. It's a software update, and the time is the time to complete the verified propagation of that software update. (I think?)]
+%using an OTA [Abbreviation should be used first alongside their expansions ... although this one may well occur earlier in the thesis, of course...]
 Measurement of the update time has been simulated on different topologies. 
 Using different topologies provides us with topological diversity which is at par with the 
 randomness that is expected in a real-world WSN deployment.[Some are random, some aren't: I'm not sure that those contexts can be intermixed ...]
@@ -521,20 +525,81 @@ Study of different topologies is a structured way of studying such deployments
 
 \subsection{System Design}
 
+The system is aimed at detecting deviation form expected behaviour
+
+Sink starts disseminating new image using Deluge protocol.
+Whenever a mote receives full data object, it reboots to the new image and sends a confirmation timing info using AM to Sink.
+Sink updates the NDB with timing info, moteID.
+IDS builds baseline basing on authentic info.
+IDS calculates surprise score using baseline and utility function.
+IDS raises alarm using threshold score.
+
+\begin{figure}[btp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{IDS}
+	%\includegraphics[scale=0.5, angle=180]{chick}
+    \caption{IDS Modelling}
+    \label{fig:ids_model}
+\end{figure}
+
+
+\begin{figure}[btp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{IDS_fw}	
+    \caption{IDS Framework}
+    \label{fig:ids_fw}
+\end{figure}
+
+Utility Function / Surprise score
+
+\begin{equation}
+\label{eqn1} 
+f_1 \eq \sum\limits‎_‎{i=0}^{‎n‎} ‎\left( \mu_i - t_i \right)‎‎
+\end{equation}
+
+\begin{equation}
+\label{eqn2} 
+f_2 \eq \sum \limits_‎{i=0}^{‎n‎} \frac{‎\left( \mu_i - t_i \right)‎‎}{\left( \sigma_i + 1 \right)‎‎}
+\end{equation}
+
+where, \\
+\hspace {2cm} $\mu_i$ - Mean Time at Mote \emphasize{i} \\
+\hspace {2cm} $\sigma_i$ - Standard Deviation of  Time at Mote \emphasize{i} \\
+\hspace {2cm} $t_i$ - Image Update Time at Mote \emphasize{i} \\
+\hspace {2cm} $i$ - Identification of the Mote  \\
+
+
 \subsection{Assumptions}
 
+A single BS in the WSN
+The BS is protected and cannot be compromise
+All motes in the WSN are static
+We have knowledge about the topology
+The software update behaviour in the WSN is transperant to the IDS
+The IDS resides externally outside the WSN (not in motes)
+
+
 \begin{itemize}
-\item	The WSN is of homogeneous nature and works in the same network
-\item	Each of the motes are  connected via wireless to at least another mote
-\item	Whenever possible, there are more than one route to reach each of the motes
-\item	The WSN is static in nature
-\item	Whenever a new image is updated in a mote, it sends a conformation active message to all base stations in the WSN
+	\item	The WSN is of homogeneous nature and works in the same network
+	\item	Each of the motes are  connected via wireless to at least another mote
+	\item	Whenever possible, there are more than one route to reach each of the motes
+	\item	The WSN is static in nature
+	\item	Whenever a new image is updated in a mote, it sends a conformation active message to all base stations in the WSN
 \end{itemize}
 
 \subsection{Threat Model}
 
-What are the security aspects it does not handle?
-Why does not it handle them?
+%What are the security aspects it does not handle?
+%Why does not it handle them?
+
+Directed towards unauthorised program image to infect the entire WSN.
+\begin{itemize}
+\item Node failure
+\item Node compromise
+\item Malicious node update
+\item Popping up of intruder node
+\end{itemize}
+
 
 An attacker is computationally bounded. This is a standard
 cryptographic assumption, implying even if the attacker has
