@@ -1,7 +1,7 @@
 %\documentclass[conference,draft]{IEEEtran}
 \documentclass[conference,man]{IEEEtran}
 \usepackage{ifpdf}
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{cite}
 \usepackage[pdftex]{graphicx}
 \graphicspath{{.}{images/}} 
@@ -554,18 +554,18 @@ Utility Function / Surprise score
 
 \begin{equation}
 \label{eqn1} 
-f_1 \eq \sum\limits‎_‎{i=0}^{‎n‎} ‎\left( \mu_i - t_i \right)‎‎
+f_1 = \sum\limits_{i=0}^{n} \left( \mu_i - t_i \right)
 \end{equation}
 
 \begin{equation}
 \label{eqn2} 
-f_2 \eq \sum \limits_‎{i=0}^{‎n‎} \frac{‎\left( \mu_i - t_i \right)‎‎}{\left( \sigma_i + 1 \right)‎‎}
+f_2 = \sum \limits_{i=0}^{n} \frac{\left( \mu_i - t_i \right)}{\left( \sigma_i + 1 \right)}
 \end{equation}
 
 where, \\
-\hspace {2cm} $\mu_i$ - Mean Time at Mote \emphasize{i} \\
-\hspace {2cm} $\sigma_i$ - Standard Deviation of  Time at Mote \emphasize{i} \\
-\hspace {2cm} $t_i$ - Image Update Time at Mote \emphasize{i} \\
+\hspace {2cm} $\mu_i$ - Mean Time at Mote \emph{i} \\
+\hspace {2cm} $\sigma_i$ - Standard Deviation of  Time at Mote \emph{i} \\
+\hspace {2cm} $t_i$ - Image Update Time at Mote \emph{i} \\
 \hspace {2cm} $i$ - Identification of the Mote  \\
 
 
