@@ -1,13 +1,18 @@
 %\documentclass[conference,draft]{IEEEtran}
 \documentclass[conference,man]{IEEEtran}
 \usepackage{ifpdf}
-\usepackage[latin1]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{cite}
 \usepackage[pdftex]{graphicx}
 \graphicspath{{.}{images/}} 
 \DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg}
 \usepackage[cmex10]{amsmath}
 \usepackage{url}
+\usepackage[rgb]{xcolor}
+\usepackage{pdfcomment}
+
+\newcommand{\dme}[2]{\pdfmarkupcomment[markup=Highlight,color=yellow]{#1}{#2}}
+\newcommand{\todo}[1]{\pdfmarkupcomment[markup=Highlight,color=red]{#1}{todo}}
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -15,24 +20,24 @@
 
 \begin{document}
 %Encapsulates the theme - should be relevant and precise
-\title{Intrusion Detection of a WSN\\Over the Air Update Protocol}
+\title{Intrusion Detection of a Wireless Sensor Network\\Over the Air Update Protocol}
+
+% \author{
+% 	\IEEEauthorblockN{	A S M Ashraful Alam, Email: aalam@cs.otago.ac.nz \\
+% 		 and
+% 		 				David Eyers, Email: dme@cs.otago.ac.nz
+% 					}
+% 	\IEEEauthorblockA{Department of Computer Science, University of Otago,
+% 	 					Dunedin, New Zealand	}
+% }
 
 \author{
-	\IEEEauthorblockN{	A S M Ashraful Alam, Email: aalam@cs.otago.ac.nz \\
-		 and
-		 				David Eyers, Email: dme@cs.otago.ac.nz
-					}
-	\IEEEauthorblockA{Department of Computer Science, University of Otago,
-	 					Dunedin , New Zealand	}
-}
-
-%\author{
-%		\IEEEauthorblockN{	A S M Ashraful Alam\IEEEauthorrefmark{1} and
-%							David Eyers\IEEEauthorrefmark{2}
-%						}
-%	\IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Computer Science, University of Otago, New Zealand, Email: aalam@cs.otago.ac.nz} %Telephone: + 64 (3) 479 8498
+		\IEEEauthorblockN{	A S M Ashraful Alam\IEEEauthorrefmark{1} and
+							David Eyers\IEEEauthorrefmark{1}
+						}
+	\IEEEauthorblockA{\IEEEauthorrefmark{1}Department of Computer Science, University of Otago, New Zealand, Email: \{aalam,dme\}@cs.otago.ac.nz} %Telephone: + 64 (3) 479 8498
 %	\IEEEauthorblockA{\IEEEauthorrefmark{2}Department of Computer Science, University of Otago, New Zealand, Email: dme@cs.otago.ac.nz} %Telephone: + 64 (3) 479 5749		 	
-%}
+}
 
 \maketitle
 
@@ -46,15 +51,15 @@
 
 %%Relevance of the research question - "So What, who cares?" - must nail down this question
 
-A Wireless Sensor Network (WSN) works in a way that forms an autonomous network and works towards a common goal of sensing and monitoring some phenomena in a unified fashion. 
-However, the programmes that run on the sensors might require updating because of changes in requirements, routines, protocols and so on. 
+Wireless Sensor Networks (WSN) form interconnections autonomously. They can be used to work together to sense and monitor some phenomena in a unified fashion. 
+However, the software that runs on the sensors might require updating because of changes in requirements, routines, protocols and so on. 
 It is not easy to round up all the deployed sensors in order to reprogramme them. 
-Hence, the idea of reprogramming over the air (OTA) using the ongoing network transmission came up; several protocols have been developed for this purpose. 
+Hence, the capability to reprogramme over the air (OTA) was developed and several specific protocols have been implemented that achieve this purpose. 
 Each protocol has its own suitability depending on the context and scenario.
-Deluge is a protocol that allows us to reprogramme over the network. 
+Deluge is one such protocol. % that allows us to reprogramme over the network. 
 The ease of reprogramming opens a backdoor to a potential intruder who can abuse the protocol by injecting a malicious program. 
-The design of Deluge do not cater for the intruder's activity; as a result, it is not possible to detect if the update was a legitimate one or not. 
-The method we propose analyses the timing of update of each of the sensors in the network and computes a `Intrusion Warning Score' through an algorithmic function to indicate a possible intrusion i.e. a probable illegitimate update. 
+The design of Deluge does not cater for the intruder's activity; as a result, it is not possible to detect if the update was a legitimate one or not. 
+The method we propose analyses the timing of update of each of the sensors in the network and computes a `Intrusion Warning Score' through an algorithmic function to indicate a possible intrusion i.e.\ a probable illegitimate update. 
 %It might be important to avoid readers interpreting the score as an indication of actual intrusion, as opposed to potential intrusion.
 
 \end{abstract}
@@ -68,9 +73,10 @@ The method we propose analyses the timing of update of each of the sensors in th
 
 
 %What is WSN?
-The idea of Wireless Sensor Network (WSN) has been prevailing for a while, but it has been made a reality only in last two decades. 
+%The idea of 
+Wireless Sensor Networks (WSN) have become practical within the last two decades. % been prevailing for a while, but it has been made a reality only in last two decades. 
 The technology has attracted great attention in recent years due to significant advances in wireless and mobile communication technologies. 
-One of the main driving force behind quick evolution of WSN is its cost-worthiness and flexibility in deployment.  
+One of the main driving forces behind the quick evolution of WSN is \dme{its cost-worthiness and flexibility in deployment}{Do you have evidence for this?}.  
 The sensors, called the nodes or motes, are generally self-powered, wireless, networked sensing devices with inbuilt limited processing hardware.    
 The manager node, which is also called a sink or base station generally has long-lasting power and probably, remain connected to a workstation with greater processing capability. 
 Motes and sinks together dynamically form an autonomous networked environment where all sensor nodes within range and sharing the same radio channel and protocols take part.
@@ -82,7 +88,7 @@ They may necessitate reprogramming after deployment to accommodate alteration in
 %Where does WSN Stand in the development evolution?
 Advances in semiconductors and embedded processors initiated the development of sensors with computational capability. 
 %The advancement in wireless and mobile communication technology made it possible to come up with a WSN theme.
-Conventionally, sensors were built using micro-electro mechanical systems (MEMS) or CMOS or LED technology, based on the purpose and property to sense. 
+Conventionally, sensors were built using \dme{micro-electro mechanical systems (MEMS)}{example?} or CMOS or LED technology, based on the purpose and property to sense. 
 Today, nano-particles are also used for tiny sized sensors.
 It is now possible to combine a wireless radio transceiver with a microprocessor, memory, and other micro-electro-mechanical sensors into a tiny device.
 These tiny sensors have advantage of being energy friendly and are deployed in environments with limited power and space.
@@ -103,16 +109,16 @@ Today, WSN is developed around an IEEE standard that specifies lower network lay
 %802.22: Wireless Regional Area Networks
 
 WSNs operate unattended over long period of time that may range from months to years.
-There is very little control over the sensors once they are deployed.
+There is often very little control over the sensors once they are deployed.
 Changes in the environment and purpose over time affects the operations of the sensors. 
 This necessitates reprogramming of the sensors to suit the evolving requirements and also to enable bug fixes after deployment.
-The scale and embedded nature of sensors make it impossible to collect every piece of sensors, reprogram them and then redeploy again. 
+The potential scale and types of embedded types of deployments of sensors may make it impossible to collect each sensor, reprogramme it and then redeploy it again. 
 Network code propagation using data dissemination protocols promises a suitable solution to this problem.
 
 
 %Why are we interested in WSN? How does that link to security?
-The technology promises huge potential for future commercial applications. 
-Enormous prospect of WSN has attracted many academics to be engaged in relevant research. 
+The technology has huge potential for future commercial applications. 
+% Enormous prospect of WSN has attracted many academics to be engaged in relevant research. 
 The technology is still evolving with greater promises of being integrated into even larger scale deployment in the form of Internet of Things (IoT) or dusts.
 It is expected to play a critical role in the  computing revolution of cooperating objects and smart embedded devices. 
 However, industry adoption is hampered owing to several factors like difficulty in programming, security issues, integration with other systems and business processes and so on. 
@@ -124,16 +130,16 @@ Before WSN matures to a point that can be reliably integrated in everyday life, 
 
 
 
-WSNs have special vulnerabilities which do not exist in wired networks.
-Security mechanism designed for conventional computing systems often are not applicable for WSN.
-Even the security techniques like WEP standards for wireless networks cannot be employed in WSN. % because of memory and computing resource constraints.
+WSNs have special vulnerabilities that do not exist in wired networks.
+Security mechanism designed for conventional computing systems often are not \dme{appropriate for}{or ``applicable to''} WSNs.
+Even the security techniques like the WEP standards for wireless networks cannot be employed in WSN because of memory and computing resource constraints.
 WSNs are more vulnerable to intrusion attempts and security threats from malicious sources.
 The limited resources in terms of memory, computational power and energy, make them easier target. 
 The attack targets may range from being on physical sensors, wireless channels, visibility of the network, even  to coordination and self-configuration of the network.
 
 Several approaches to address security issues in WSN have been proposed in recent years. 
 They approaches converge on security to ensure reliable data transfer using simple and flexible protocols with high level of confidentiality. 
-Because of the resource constraint nature of the motes, security is a vulnerable area to explore.
+Because of the resource constrained nature of the motes, security is a vulnerable area to explore.
 Lack of suitable computation capability hinders deploying heavy cryptographic measures, wireless nature exposes itself to the adversaries who can easily overcome the barriers to listen to all the traffic and even inject their own packets into the network.
 When deployed in a hostile environment, the attackers may have physical or logical access or proximity access capability. 
 Threats to security  can be directed to individual motes, towards the network traffic or  a cluster of motes.
@@ -157,13 +163,13 @@ However, an IDS does not prevent the break in, but alerts following some predefi
 Research in WSN security with respect to IDS has lots of potentials for new discovery and implementation.
 An IDS architectures for static WSNs has been suggested that watches over the communications in the neighbourhood \cite{roman2006applying}.
 Such an IDS is not capable to identify a malicious update that has been effected by an adversary in the WSN.
-We propose a novel intrusion detection algorithm that suggest a minor modification of the OTA update protocol by enabling an active message once the update has been completed.
+We propose a novel intrusion detection algorithm that just requires a minor modification of the OTA update protocol by enabling an \dme{active message}{What's an ``active message''? This has to be defined.} once the update has been completed.
 The active message enables a centralised view of a network-wide knowledge  that is processed and analysed to work out a score function according to an algorithmic formula to raise a red flag which could indicate a possible intrusion.
 
 
 
 %My Suggested schemes
-This work's contributions are two fold. 
+\dme{This work's contributions are two fold.}{A good start! :-) }
 We have analyzed 
 
 We have studied how the different  algorithm parameters %
@@ -188,8 +194,8 @@ We have studied how the different  algorithm parameters %
 %Rationale of choosing to research question
 %Describe a map of the whole thesis
 %
-The rest of this report is structured in the following way. In Section \ref{sec:lit}, we discuss the security and intrusion primitives that are talked about in the WSN arena. 
-We try to find out what security aspects have not been addressed by the present  security researchers and the reason behind.
+The rest of this paper is structured in the following way. In Section \ref{sec:lit}, \dme{we discuss the security and intrusion primitives that are talked about in the WSN arena.}{How about ``We provide an overview of related research work''?}
+We try to find out what security aspects have not been addressed by the present  security researchers and the reasons behind \dme{any security deficiencies}{(``the reasons behind'' needs some object, such as what I've added.}.
 In Section \ref{sec:del}, we explain the main concepts of Deluge and its special security measures that have been implemented on Deluge. 
 We present design of our proposed algorithm  in Section \ref{sec:deg} and explain how it is connected to the sensor node. 
 In Section \ref{sec:imp}, we have explained the experiment methodology and its implementation details.
@@ -200,20 +206,20 @@ Finally, we conclude our arguments in Section \ref{sec:conc}.
 %
 \section{Related Work / Literature Review} 
 \label{sec:lit}
-Security is the prime concern in the path to socialising the WSN technology.
+\dme{Security is the prime concern in the path to socialising the WSN technology.}{This needs a citation to provide evidence. Clearly it's one of the concerns, but the prime concern?}
 Due to its applicability in wide variety of purposes, keeping WSNs secure is a challenging task.
 WSNs do not have any session or presentation layer.
 Security techniques designed for MANETs are not readily applicable in WSN for its constraints like small processing capability, low battery life, small memory.
 various possible attacks on WSNs has been explained by   \cite{roosta2006taxonomy}, \cite{roosta2008attacks}.
 On the other hand, WSN security design and analysis suggests many techniques to address them.
-Many security schemes for WSN have been proposed targeting two main approaches - using cryptography and using IDS.%to solve the security problems mainly using 
+Many security schemes for WSN have been proposed targeting two main approaches---using cryptography and using IDS. %to solve the security problems mainly using 
 Cryptographic approach actively aims to protect privacy, ensure authenticity, data integrity and confidentiality through use of cryptographic keys and algorithms, policies and procedures.
 While symmetric key cryptographic techniques are more efficient in required resources, they suffer from a shortcoming that the key must be shared for being useful. 
 However, asymmetric key cryptography is free from this limitation with a greater consumption of resources.
 Anomaly detection, on the other hand, is a passive security measure that monitors the behaviour from a observer's point of view and aims to alert a suitable entity for further actions.
 
 Symmetric key cryptographic techniques are useful when both the secret key and the algorithm remains unknown, which can be difficult due to the fact that the WSN is expected to be deployed in exposed environment. Yet, most security schemes in WSN use the technique due to ease of hardware implementation, small computation, power and memory requirements. 
-\cite{ISI:000205012800003} recommends Skipjack, MISTY1, and Rijndael to be the most suitable block  ciphers for WSNs, based on the combination of required memory, energy efficiency and intended security strength as the benchmark parameters. In terms of operation mode, pairwise links should use Output Feedback and broadcasts should prefer Coded Block Chain (CBC) mode.
+\cite{ISI:000205012800003} \dme{recommends}{Don't use citations as nouns. Say AUTHOR recommends X} Skipjack, MISTY1, and Rijndael to be the most suitable block  ciphers for WSNs, based on the combination of required memory, energy efficiency and intended security strength as the benchmark parameters. In terms of \dme{operation mode}{The following text isn't justified in its current presentation.}, pairwise links should use Output Feedback and broadcasts should prefer Coded Block Chain (CBC) mode.
 \cite{9783540795902} suggested use of available transceiver chip as resource for hardware based AES encryption in the sensor as it outperforms software implementations of some of the most popular cipher algorithms suitable for WSN.
 \cite{5472979} concludes that the lightweight  block cipher proposed by \cite{youssef1996new} achieves good performance, providing  energy efficiency as well as suitable security for sensor nodes  in a WSN in comparison to AES, Skipjack, Puffin, Salsa, Sosemanuk, RC4. 
 However, cryptanalysis of the technique by \cite{Heys:1996:CSP} shows that it requires large number of rounds to make it significantly resistant against attacks.
@@ -224,14 +230,14 @@ Asymmetric key cryptography tends to be resource intensive, but has the advantag
 It is very suitable in key exchange, digital signature and likewise. 
 There are various pubic key cryptographic algorithms like Rabin's Scheme,  RSA, Ntru-encrypt, Elliptic curve cryptography (ECC), Pairing Based Cryptography (PBC) and so on; few of them has been implemented in software and hardware for WSN \cite{ISI:000290947700017}, \cite{ISI:000312683300029}, \cite{ISI:000328624800002}. %Lots of them, \cite{}, \cite{}, \cite{}, \cite{},.
 Suitably customised implementations can result in a reduced protocol overhead, less packet transmission and power savings.
-ECC and PBC based techniques provide better trade-off  between  key size and security strength than RSA; thus is suggested to be suitable for WSN with advantages like lower computation time, storage space, transmitted data, required energy \cite{Liu:2008:TCL:1371607.1372738}, \cite{Oliveira:2011:TPA:1930560.1931219}.%, \cite{}, \cite{}, \cite{}, \cite{},.
+ECC and PBC based techniques provide better trade-off  between  key size and security strength than RSA; thus is suggested to be suitable for WSN with advantages like lower computation time, storage space, transmitted data, required energy \cite{Liu:2008:TCL:1371607.1372738}, \cite{Oliveira:2011:TPA:1930560.1931219}. %, \cite{}, \cite{}, \cite{}, \cite{},.
 However, asymmetric key cryptography  cannot be used as general purpose scheme, rather to be used for authenticated session establishment, authentication, signature generation and verification, secret key exchange.
 
 IEEE 802.15.4 specification does not require any security implementation. 
 Yet, it describes the usage of the AES for either encryption (CTR mode) or authentication (CBC mode) or both (CCM-mode).
 Transport Layer Security (TLS) relies on the connection-oriented TCP protocol as transport mechanism.  
 %However, many applications used in WSNs run over connection-less UDP protocol.
-TLS implementations have been provided in TinyOS; however, Contiki OS still lacks the support. [NEED TO CHECK Contiki ASSERTION]
+TLS implementations have been provided in TinyOS; however, Contiki OS still lacks the support. \todo{NEED TO CHECK Contiki ASSERTION}
 TinyOS implemented Skipjack algorithm with the CBC mode in TinySec, which has been discarded later on, and support for  hardware based AES-128 encryption has been provided using CC2420 chip.
 \cite{ISI:000308844100019}  discovered a (slightly) faster than brute force way to break the AES.  %it would still take trillions of years to recover strong AES keys using the biclique technique, which is a variant of what's known as a meet-in-the-middle cryptographic attack. This method works both from the inputs and outputs of AES towards the middle, reusing partial computation results to speed up the brute-force key search. The technique is designed to reduce the time it takes an attacker to recover the key. 
 
@@ -362,7 +368,7 @@ We shall limit ourselves within its application on WSN, specifically on Deluge o
 Before one understands how the IDS works and is able to focus on its  mechanism, one needs some prior knowledge about Deluge and its security techniques.
 
 
-ADDITIONAL NOTES TO BE INCORPORATED or DISCARDED
+\dme{ADDITIONAL NOTES TO BE INCORPORATED or DISCARDED}{If the paper is to be 8 pages, then you should be talking about your design by page 4 or so, and your results should be from page 6 at the latest}
 % Features, advantages and disadvantages of the protocols.
 % Comparison among protocols, similarities and contrasts.
 
@@ -406,7 +412,7 @@ The subset reprogramming allows the same WSN to preferentially perform different
 In Trickle, which is a well-known OTA update protocol, the motes periodically advertise their own running code version to the neighbours. 
 When a neighbour listens to an older version, it disseminates the updated code. 
 Trickle addresses single packet dissemination and uses suppression and dynamic adjustment of the broadcast rate to limit transmissions among neighboring nodes.
-The Trickle algorithm controls the rate of transfer by suppressing a motes own broadcast  instead of flooding the network \cite{ISI:000221664800002}.% scalable multicast, and wireless broadcast literature
+The Trickle algorithm controls the rate of transfer by suppressing a motes own broadcast  instead of flooding the network \cite{ISI:000221664800002}. % scalable multicast, and wireless broadcast literature
 Another OTA update protocol, Multihop Network Programming (MNP) is an enhancement over Trickle or Deluge in a way that is more efficient in image transfer using `pipelining' to enable faster data propagation and also in terms of energy.
 MNP handles the problems that occur from message collision and hidden terminal using a greedy approach of sender selection algorithm to guarantee that at a time, there is at most one programme transmitting source  in a neighbourhood. 
 MNP  \cite{Kulkarni:2005:MMN:1068511.1069352}.
@@ -449,10 +455,10 @@ The protocol achieves high performance due to its three-phase handshaking techni
 
 To represent large data objects, Deluge splits in into fixed size pages.
 Pages are basic data transfer objects which are further split into fixed no of packets for wireless transmission.
-Both pages and packets use 16bit CRC for integrity and data correctness.
+Both pages and packets use 16-bit CRC for integrity and data correctness.
 
-The deluge mechanism is simple yet interesting. 
-Each node periodically advertises its version no and summary of software/data object.
+The deluge mechanism is simple \dme{yet interesting}{??}. 
+Each node periodically advertises its version \dme{no}{Never use `no' as `number'. It's not valid. `No.' can be, but why do that when there's plenty of space to put `number'?} and summary of software/data object.
 Version no is used to differentiate between updates and is chronologically increased for each subsequent updates.
 Nodes in the neighbourhood can determine from this advertisement if any of its neighbours have an old profile. 
 Nodes listening to such advertisements suppresses their own advertisement if it has the same version of software; however, if it has a newer version then responds with its object profile.
@@ -505,28 +511,28 @@ launch several attacks on Deluge by injecting bogus or modified advertisement pa
 \section{Design and Implementation}
 
 %Research Question
-Is it possible to detect malicious software updates applied using over the air update protocol (especially Deluge) with multihop sensor networks using timing analysis approach?
+\dme{Is it possible to detect malicious software updates applied using over the air update protocol (especially Deluge) with multihop sensor networks using timing analysis approach?}{state this as a RQ in the introduction. Don't start \S4 with a hypothetical question.}
 We hypothesize that it is possible to detect intrusion by analysing the timing of the software update of the motes in WSN.
 The pattern generated from the analysis is dependent on relative physical position of the motes and time of update.
 
-We perform a comprehensive evaluation of mote update time.
-After a new data object is delivered to the mote and the mote uses the bootloader to start running the new data object is the time we are interested in.
+We perform a comprehensive evaluation of \dme{mote update time}{what does this mean?}.
+\dme{After a new data object is delivered to the mote and the mote uses the bootloader to start running the new data object is the time we are interested in.}{Not a sentence.}
 %[You're not being precise about what type of update this is. It's a software update, and the time is the time to complete the verified propagation of that software update. (I think?)]
 %using an OTA [Abbreviation should be used first alongside their expansions ... although this one may well occur earlier in the thesis, of course...]
 Measurement of the update time has been simulated on different topologies. 
-Using different topologies provides us with topological diversity which is at par with the 
-randomness that is expected in a real-world WSN deployment.[Some are random, some aren't: I'm not sure that those contexts can be intermixed ...]
+\dme{Using different topologies provides us with topological diversity which is at par with the 
+randomness that is expected in a real-world WSN deployment.[Some are random, some aren't: I'm not sure that those contexts can be intermixed ...]}{I'm not convinced.}
 Study of different topologies is a structured way of studying such deployments
 \label{sec:deg}
 
 
-\subsection{Identification Requirement}
+\subsection{\dme{Identification Requirement}{What does this mean?}}
 
 \subsection{System Design}
 
-The system is aimed at detecting deviation form expected behaviour
+The system is aimed at detecting deviation from expected behaviour
 
-Sink starts disseminating new image using Deluge protocol.
+The sink starts disseminating new image using Deluge protocol.
 Whenever a mote receives full data object, it reboots to the new image and sends a confirmation timing info using AM to Sink.
 Sink updates the NDB with timing info, moteID.
 IDS builds baseline basing on authentic info.
@@ -537,7 +543,7 @@ IDS raises alarm using threshold score.
     \centering
     \includegraphics[width=0.5\textwidth]{IDS}
 	%\includegraphics[scale=0.5, angle=180]{chick}
-    \caption{IDS Modelling}
+    \caption{\dme{IDS Modelling}{Looks good... but what does it mean? The picture needs to be self-explanatory, which in this case means text annotations or a key.}}
     \label{fig:ids_model}
 \end{figure}
 
@@ -553,18 +559,18 @@ Utility Function / Surprise score
 
 \begin{equation}
 \label{eqn1} 
-f_1 \eq \sum\limits‎_‎{i=0}^{‎n‎} ‎\left( \mu_i - t_i \right)‎‎
+f_1 = \sum\limits_{i=0}^{n} \left( \mu_i - t_i \right)
 \end{equation}
 
 \begin{equation}
 \label{eqn2} 
-f_2 \eq \sum \limits_‎{i=0}^{‎n‎} \frac{‎\left( \mu_i - t_i \right)‎‎}{\left( \sigma_i + 1 \right)‎‎}
+f_2 = \sum \limits_{i=0}^{n} \frac{\left( \mu_i - t_i \right)}{\left( \sigma_i + 1 \right)}
 \end{equation}
 
 where, \\
-\hspace {2cm} $\mu_i$ - Mean Time at Mote \emphasize{i} \\
-\hspace {2cm} $\sigma_i$ - Standard Deviation of  Time at Mote \emphasize{i} \\
-\hspace {2cm} $t_i$ - Image Update Time at Mote \emphasize{i} \\
+\hspace {2cm} $\mu_i$ - Mean Time at Mote \emph{i} \\
+\hspace {2cm} $\sigma_i$ - Standard Deviation of  Time at Mote \emph{i} \\
+\hspace {2cm} $t_i$ - Image Update Time at Mote \emph{i} \\
 \hspace {2cm} $i$ - Identification of the Mote  \\
 
 
@@ -574,7 +580,7 @@ A single BS in the WSN
 The BS is protected and cannot be compromise
 All motes in the WSN are static
 We have knowledge about the topology
-The software update behaviour in the WSN is transperant to the IDS
+The software update behaviour in the WSN is transparent to the IDS
 The IDS resides externally outside the WSN (not in motes)
 
 
@@ -600,7 +606,7 @@ Directed towards unauthorised program image to infect the entire WSN.
 \end{itemize}
 
 
-An attacker is computationally bounded. This is a standard
+\dme{An attacker is computationally bounded.}{This is interesting discussion, but not really relevant here AFAICS.} This is a standard
 cryptographic assumption, implying even if the attacker has
 access to supercomputers, its computing power is at most
 polynomial. Most key management schemes in the WSN
@@ -633,10 +639,10 @@ are considered complementary to this work.
 Implementation of wide varieties of WSN  demands more studies to address the security issues. Sensor nodes need to address two major security issues; preserving privacy and authenticating node identity.\\
 
 %%Principle of addressing different attacks on WSN
-A person, device or entity that attempts to cause harm to the network, for example, by unauthorised access or denial of service (DoS) is a WNS adversary. It can be a mote class or laptop attacker working inside or out of the network in active and/or passive mode. Physical layer communication is subjected to jamming or tempering that can be solved using spread spectrum communication, jamming reports, complete design of the node physical package. Data link layer is affected by collision, exhaustion and unfairness, which can be addressed by error correcting codes, collision detection technique, TDM, rate limiting. Network layer communication can be disrupted by selective forwarding, sink hole, Sybil attack, flooding; such attacks are addressed by link layer encryption and authentication, multipath routing, identity verification, authenticated broadcast. Transport layer communications can be affected by flooding, de-synchronisation, which can be solved by connectionless protocol, packet authentication including all control fields in the transport protocol header. Countermeasure techniques in WSN need physical layer protection, which may not be adequate. Cryptography can provide link layer encryption and authentication mechanism (MAC) but this is not enough. It is possible to employ carefully-designed protocols that consider routing, localization, data aggregation and so on with respect to security principles and attacker models. However, all these adaptive measures have energy and computational consequences.\\
+A person, device or entity that attempts to cause harm to the network, for example, by unauthorised access or denial of service (DoS) is a \dme{WNS}{surely WSN?} adversary. It can be a mote class or laptop attacker working inside or out of the network in active and/or passive mode. Physical layer communication is subjected to jamming or tempering that can be solved using spread spectrum communication, jamming reports, complete design of the node physical package. Data link layer is affected by collision, exhaustion and unfairness, which can be addressed by error correcting codes, collision detection technique, TDM, rate limiting. Network layer communication can be disrupted by selective forwarding, sink hole, Sybil attack, flooding; such attacks are addressed by link layer encryption and authentication, multipath routing, identity verification, authenticated broadcast. Transport layer communications can be affected by flooding, de-synchronisation, which can be solved by connectionless protocol, packet authentication including all control fields in the transport protocol header. Countermeasure techniques in WSN need physical layer protection, which may not be adequate. Cryptography can provide link layer encryption and authentication mechanism (MAC) but this is not enough. It is possible to employ carefully-designed protocols that consider routing, localization, data aggregation and so on with respect to security principles and attacker models. However, all these adaptive measures have energy and computational consequences.\\
 
 %%Suggested security techniques by different researchers
-Key Distribution techniques in WSN have been discussed by Eschenauer and Gligor~\cite{Gig02}. Malan, Welsh and Smith first proposed implementation of ECC in WSN~\cite{Mws}. Implementation of ECC with elliptic curve parameters is recommended by SECG~\cite{Ning08}. Privacy in WSN is ensured by protecting sensor information. Abdelzaher has discussed the techniques in detail~\cite{He07}.\\
+\dme{Key Distribution techniques}{The motivation for this paragraph won't be clear to the reader. How does it connect to the preceding paragraph?} in WSN have been discussed by Eschenauer and Gligor~\cite{Gig02}. Malan, Welsh and Smith first proposed implementation of ECC in WSN~\cite{Mws}. Implementation of ECC with elliptic curve parameters is recommended by SECG~\cite{Ning08}. Privacy in WSN is ensured by protecting sensor information. Abdelzaher has discussed the techniques in detail~\cite{He07}.\\
 
 
 
@@ -644,7 +650,7 @@ Key Distribution techniques in WSN have been discussed by Eschenauer and Gligor~
 
 
 
-Most current standard security
+\dme{Most current standard security}{same comment regarding relevance / link of text}
 protocols were designed for two-party settings
 and do not scale to a large number of participants \cite{ShiPer04}.
 Integrated, cross-layer protocol design 
@@ -655,7 +661,9 @@ which those networks fulfil the sensing tasks they are built for. \\
  
  
 
-Nodes within the event radius of a WSN have fair access to the wireless medium; this property is ensured by established protocols e.g. 802.11b and other variants of MAC layer protocols. We can identify threats based on expected outcome (probability) of transmission originated from each specific node. \\ %802.15.4 is the proposed WSN protocol
+Nodes within the event radius of a WSN have fair access to the wireless medium; this property is ensured by established protocols e.g. 802.11b and other variants of MAC layer protocols.
+%
+\dme{We can identify threats}{This is the beginnings of what you should be talking about, but the event-based/role-based presentation is a distraction. So far I don't think any unfamiliar reader will understand your design at this point.} based on expected outcome (probability) of transmission originated from each specific node. \\ %802.15.4 is the proposed WSN protocol
 \begin{itemize}
 \item \textbf{Event-based Approach:} It is possible to build a probability model of originated transmission for each sensor node based on historical information. This is a bottom-up approach in which raw event data generated in remote sensors are collated to arrive at a decision.%So the idea is to look at whether a node begins behaving "unusually"? E.g. a node suddenly starts sending messages at ten times the previous maximum rate?
 
@@ -663,13 +671,13 @@ Nodes within the event radius of a WSN have fair access to the wireless medium; 
 
 \end{itemize}
 
-It is possible to combine symmetric key and asymmetric key cryptographic approaches to deny information to such nodes in the short run and/or policy based approaches in the long run. We shall examine presently implemented security techniques in WSN and shall improve upon them by blending cryptographic approaches at lower level (MAC/Network Layer) and role/event based approaches in higher layers, e.g. presentation layer.
+\dme{It is possible to combine symmetric key and asymmetric key}{relevance?} cryptographic approaches to deny information to such nodes in the short run and/or policy based approaches in the long run. We shall examine presently implemented security techniques in WSN and shall improve upon them by blending cryptographic approaches at lower level (MAC/Network Layer) and role/event based approaches in higher layers, e.g. presentation layer.
 
 
 
 \section{Implemetation of the Experiment}  %Methodology
 \label{sec:imp}
-PacketLink is most reliable when software acknowledgements are enabled 
+\dme{PacketLink}{??} is most reliable when software acknowledgements are enabled 
   as opposed to hardware auto acknowledgements.
   
   
