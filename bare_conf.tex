@@ -1,8 +1,9 @@
 %\documentclass[conference,draft]{IEEEtran}
-\documentclass[conference,man]{IEEEtran}
+\documentclass[conference,final]{IEEEtran}
 \usepackage{ifpdf}
 \usepackage[utf8]{inputenc}
 \usepackage{cite}
+\usepackage{paralist}
 \usepackage[pdftex]{graphicx}
 \graphicspath{{.}{images/}} 
 \DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg}
@@ -163,8 +164,9 @@ However, an IDS does not prevent the break in, but alerts following some predefi
 Research in WSN security with respect to IDS has lots of potentials for new discovery and implementation.
 An IDS architectures for static WSNs has been suggested that watches over the communications in the neighbourhood \cite{roman2006applying}.
 Such an IDS is not capable to identify a malicious update that has been effected by an adversary in the WSN.
-We propose a novel intrusion detection algorithm that just requires a minor modification of the OTA update protocol by enabling an \dme{active message}{What's an ``active message''? This has to be defined.} once the update has been completed.
-The active message enables a centralised view of a network-wide knowledge  that is processed and analysed to work out a score function according to an algorithmic formula to raise a red flag which could indicate a possible intrusion.
+We propose a novel intrusion detection algorithm that just requires a minor modification of the OTA update protocol by enabling an Active Message (AM). AM is  a single-hop, unreliable packet used for network abstraction in TinyOS. It has a destination address, a type field, provides synchronous acknowledgements \cite{tep116}.
+%an \dme{active message}{What's an ``active message''? This has to be defined.} once the update has been completed.
+AM enables a centralised view of a network-wide knowledge  that is processed and analysed to work out a score function according to an algorithmic formula to raise a red flag which could indicate a possible intrusion.
 
 
 
@@ -490,7 +492,6 @@ Use of hash function that binds later packets is a kind of digital signature by 
 
 
 %How does Deluge handle security? 
-
 % title = {Securing the Deluge Network programming system},
 % http://www.cs.berkeley.edu/~jwhui/pubs/ipsn06-secureDeluge.pdf
 
@@ -508,45 +509,78 @@ launch several attacks on Deluge by injecting bogus or modified advertisement pa
 %In order to exhaust the energy of a node, a malicious node may continuously request the same pages or unwanted pages from a normal node to trigger the transmission of code data packets.
 
 
-\section{Design and Implementation}
+\section{Design and Methodology}
 
 %Research Question
-\dme{Is it possible to detect malicious software updates applied using over the air update protocol (especially Deluge) with multihop sensor networks using timing analysis approach?}{state this as a RQ in the introduction. Don't start \S4 with a hypothetical question.}
-We hypothesize that it is possible to detect intrusion by analysing the timing of the software update of the motes in WSN.
-The pattern generated from the analysis is dependent on relative physical position of the motes and time of update.
+%\dme{Is it possible to detect malicious software updates applied using over the air update protocol (especially Deluge) with multihop sensor networks using timing analysis approach?}{state this as a RQ in the introduction. Don't start \S4 with a hypothetical question.}
+%We hypothesize that it is possible to detect intrusion by analysing the timing of the software update of the motes in WSN.
+%The pattern generated from the analysis is dependent on relative physical position of the motes and time of update.
+%
+%We perform a comprehensive evaluation of \dme{mote update time}{what does this mean?}.
+%\dme{After a new data object is delivered to the mote and the mote uses the bootloader to start running the new data object is the time we are interested in.}{Not a sentence.}
+%%[You're not being precise about what type of update this is. It's a software update, and the time is the time to complete the verified propagation of that software update. (I think?)]
+%%using an OTA [Abbreviation should be used first alongside their expansions ... although this one may well occur earlier in the thesis, of course...]
+%Measurement of the update time has been simulated on different topologies. 
+%\dme{Using different topologies provides us with topological diversity which is at par with the 
+%randomness that is expected in a real-world WSN deployment.[Some are random, some aren't: I'm not sure that those contexts can be intermixed ...]}{I'm not convinced.}
+%Study of different topologies is a structured way of studying such deployments
+%\label{sec:deg}
+%The research is aimed at detecting intrusion attempts by analysing deviation from expected behaviour of the motes during a software update using Deluge protocol.
+%The following subsections describe the proposed system. Subsection \ref{subsec:sysdeg} presents a system
+%overview. The subsequent sections are dedicated to in-depth descriptions of the main
+%components of the framework. The special case of low data rate networks is dealt with
+%in Section 4.6.
 
-We perform a comprehensive evaluation of \dme{mote update time}{what does this mean?}.
-\dme{After a new data object is delivered to the mote and the mote uses the bootloader to start running the new data object is the time we are interested in.}{Not a sentence.}
-%[You're not being precise about what type of update this is. It's a software update, and the time is the time to complete the verified propagation of that software update. (I think?)]
-%using an OTA [Abbreviation should be used first alongside their expansions ... although this one may well occur earlier in the thesis, of course...]
-Measurement of the update time has been simulated on different topologies. 
-\dme{Using different topologies provides us with topological diversity which is at par with the 
-randomness that is expected in a real-world WSN deployment.[Some are random, some aren't: I'm not sure that those contexts can be intermixed ...]}{I'm not convinced.}
-Study of different topologies is a structured way of studying such deployments
-\label{sec:deg}
+The proposed IDS is external to the WSN, resides on a computing system that is physically connected to the sink.
+It utilises existing packet transmission protocols to collect related information. The information, which is predominantly identification of the mote $i$ and the time at which the new image updated the mote $t_i$, is then processed.
+The IDS analyses the timing of update of each of the sensors in the WSN and computes a `Surprise Score' or `Intrusion Warning Score' (IWS) using an algorithmic function to indicate a possible intrusion, i.e., a probable illegitimate update.
 
 
-\subsection{\dme{Identification Requirement}{What does this mean?}}
+%\subsection{\dme{Identification Requirement}{What does this mean?}}
+%\subsection{Problem Statement}
+%Protection against unauthorised access is achieved by authentication.
+%From security points of view authenticity is more important than encryption.
+%However, encryption is the typical way of achieving 
+
 
 \subsection{System Design}
+\label{subsec:sysdeg}
 
-The system is aimed at detecting deviation from expected behaviour
-
-The sink starts disseminating new image using Deluge protocol.
-Whenever a mote receives full data object, it reboots to the new image and sends a confirmation timing info using AM to Sink.
-Sink updates the NDB with timing info, moteID.
-IDS builds baseline basing on authentic info.
-IDS calculates surprise score using baseline and utility function.
-IDS raises alarm using threshold score.
+%The sink starts disseminating new image using Deluge protocol.
+%Whenever a mote receives full data object, it reboots to the new image and sends a confirmation timing info using AM to Sink.
+%Sink updates the NDB with timing info, moteID.
+%IDS builds baseline basing on authentic info.
+%IDS calculates surprise score using baseline and utility function.
+%IDS raises alarm using threshold score.
+The intrusion detection algorithm suggests some modification of the OTA update protocol by incorporating an Active Message (AM).
+An AM is a single-hop, unreliable packet used for network abstraction. 
+It has a destination address, a type  field, provides synchronus acknowledgements \cite{tep116}. 
+An AM can be used to carry necessary timing information to the sink once an object has been transferred completely to any mote and the mote reboots with the new image running.
 
 \begin{figure}[btp]
     \centering
     \includegraphics[width=0.5\textwidth]{IDS}
-	%\includegraphics[scale=0.5, angle=180]{chick}
+	%\includegraphics[scale=0.5, angle=180]{IDS}
     \caption{\dme{IDS Modelling}{Looks good... but what does it mean? The picture needs to be self-explanatory, which in this case means text annotations or a key.}}
     \label{fig:ids_model}
 \end{figure}
 
+The IDS model has been explained in Figure~\ref{fig:ids_model} and \ref{fig:ids_fw}.
+The figure has three kinds of components - 
+\begin{inparaenum}
+\item the motes in the WSN that are subject to legitimate or illegitimate update; 
+\item the sink which is utilisied to initiate a legitimate update. 
+The sink is protected from all kinds of security breaches whether it is physical or logical. 
+A IDS transport client (ITC) application runs on the sink that works in coordination with the IDS and assists in the intrusion detection; and
+\item there is an IDS application that runs on a system with higher computing resources. 
+The device is physically attached to the sink.
+It houses a network database (NDB).
+\end{inparaenum}
+%\begin{inparaenum}
+%\item ; 
+%\item ; and
+%\item .
+%\end{inparaenum}
 
 \begin{figure}[btp]
     \centering
@@ -555,27 +589,133 @@ IDS raises alarm using threshold score.
     \label{fig:ids_fw}
 \end{figure}
 
-Utility Function / Surprise score
+The motes in the network perform the action of endorsing update time. 
+It initiates an AM with the update time information to the sink. 
+An AM has several fields: destination address, type identifier that indicates the update time information and the protocol, timing information and a checksum value.
+[DO WE WANT TO INCLUDE THE PATH TAGGING; MAY BE LATER - IT INCREASES RELIABILITY, NOT DIRECTLY $IDS$ ACTIVITY?]
+The packet is transported over the network.
+When it arrives at the sink, the checksum value is examined by the ITC to ensure that the packet content has not been altered enroute.
+The ITC then inserts the update time, mote ID and related information to the NDB in the IDS.
+The IDS maintains an identifier to differentiate among different update times from different runs for the same mote.
 
-\begin{equation}
-\label{eqn1} 
-f_1 = \sum\limits_{i=0}^{n} \left( \mu_i - t_i \right)
-\end{equation}
+The first software update update run in the WSN is considered to be legitimate and the IDS takes this timing information as baseline.
+It is possible and desirable that the IDS is trained with several other update runs.
+However, the IDS needs to be manually controlled to enable multiple training runs.
+Outcome from these runs are statistically treated to build the baseline.
+Utilising multiple runs are useful and beneficial as it increases accuracy and dependency.
 
+Once the IDS baseline has been built, all subsequent updates are liable to scrutiny by the IDS.
+The timing analyser module in the IDS inspects the NDB once an update activity has been detected.
+It determines the changes in the statistics of the update time and calculates IWS based on utility function, as
+%\begin{equation}
+%\label{eqn1} 
+%	f_1 = \sum\limits_{i=0}^{n} \left( \mu_i - t_i \right)
+%\end{equation}
 \begin{equation}
 \label{eqn2} 
-f_2 = \sum \limits_{i=0}^{n} \frac{\left( \mu_i - t_i \right)}{\left( \sigma_i + 1 \right)}
+	f_2 = \sum \limits_{i=0}^{n} \frac{\mu_i - t_i }{\sigma_i + 1}
 \end{equation}
+where, 
 
-where, \\
-\hspace {2cm} $\mu_i$ - Mean Time at Mote \emph{i} \\
-\hspace {2cm} $\sigma_i$ - Standard Deviation of  Time at Mote \emph{i} \\
-\hspace {2cm} $t_i$ - Image Update Time at Mote \emph{i} \\
-\hspace {2cm} $i$ - Identification of the Mote  \\
+	\hspace {2cm} $i$ --- Identification of the Mote  
+	
+	\hspace {2cm} $t_i$ --- Image Update Time at Mote \emph{i} 
+	
+	\hspace {2cm} $\mu_i$ --- Mean Update Time at Mote \emph{i} 
+	
+	\hspace {2cm} $\sigma_i$ --- Standard Deviation of Update Time at Mote \emph{i} 
+	
+The IDS considers an increase of IWS upto 10\% from the baseline value to be safe and marks as `GREEN' zone, an increase above 25\% to be possible intrusion and is marked as `RED' zone.
+However, an increase in 10\% --- 25\% can neither be considered safe, nor an intrusion, hence is marked as `GREY' that indicates a situation where rules are not known.
+However, the thresholds are not conclusive and may require some variation based on the density around the sink and scale of deployment.
+
+\subsection{Algorithm}
+\label{subsec:alg}
+NOT STATED / DISCUSSED IN THIS PAPER
+
+\subsubsection{Database Structure}
+\label{ssc:db}
+NDB stores the statistics of the update time of all the motes in the WSN for each update applied.
+NDB consists of three flat tables that work as storage and also have been designed to improve performance. 
+Records in the In-Network Activity Table (INT) contain following fields:
+\begin{verbatim}
+mote_id, timestamp, id_seq, 
+upd_seq, upd_type, zone_type
+\end{verbatim}
+where, $mote\_id$ is the source node ID, $timestamp$ is the time when the new software image starts executing, $id_seq$ is the number of times an update arrived from same $mote\_id$, $upd\_seq$ is the number of time an update has been initiated from the sink.
+The unique key for INT is $mote\_id$, $upd\_seq$ pair.
+$upd\_type$ indicates if the record belonged to a baseline update.
+For a baseline update type, the $zone_type$ is $zero$, while for others it is updated to indicate if the update related to that particular mote from that particular run was processed as GREEN, GREY or RED.
+
+The Baseline Table (BLT) holds the processed information from the legitimate runs and has the following fields:
+\begin{verbatim}
+mote_id, mu, sigma
+\end{verbatim}
+where, $mote\_id$ is the source node ID, $mu$ is the mean time and $sigma$ is the standard error for each $mote\_id$ from all legitimate runs.
+
+The Intrusion Activity Table (IAT) filters out necessary information from INT about most recent software update and contributes to the performance of the IDS.
+The table has two fields:
+\begin{verbatim}
+mote_id, timestamp
+\end{verbatim}
+where, $mote\_id$  and $timestamp$ are same as the corresponding fields in INT.
+Every time a decision on an update has been made and a new update is detected, this table is flashed.
+
+\subsubsection{Activities in the Network}
+\label{ssc:acnet}
+As part of enhancement into the deluge protocol, the motes are enriched with the prior knowledge of the sink or sinks in the WSN.
+Whenever an update takes place in a mote, it reboots with the new software running and stores the bootup time in its memory.
+I NEED TO CONFIRM IF THE TIME IS ALREADY SAVED WITH THE IMAGE AS PART OF DELUGE PROTOCOL IMAGE/GOLDEN IMAGE.
+The locally stored information  is used later in case it requires to recover from packet delivery failure.
+The information $type$, $mote\_id$,  $time\_stamp$,$upd\_seq$ are packed along with an additional checksum in an AM packet and forwarded to the sink/sinks.
+The AM has the following information in the packet:
+\begin{verbatim}
+|--------------------------------------------------|
+|         |----------------------------------------|
+|Source ID|message type|timestamp|upd_seq|checksum||
+|---------|----------------------------------------|
+
+Figure: We need to draw a better picture
+\end{verbatim}
+The AM packet is relayed through the network to the sink.
+
+\subsubsection{Activities in the Sink}
+\label{ssc:acsink}
+As an AM arrives from the radio network to the sink, the ITC application running on the sink verifies the checksum.
+If the checksum fails, the packet is discarded and failure recovery is initiated once only in coordination with the IDS.
+However, if the AM passes checksum, the ITC application extracts the relevant information and populates the INT in the resident host system. 
+
+\subsubsection{Activities in the IDS}
+\label{ssc:acids}
+An update is typically initiated from the host system where the IDS resided.
+The IDS constantly monitors the programming port and coordinates with the ITC. 
+They automatically identify the first update as input for baseline training data.
+It is possible to put the IDS in training mood for extended number of updates.
+Result from all updates run during the training period are statistically treated to build the baseline.
+Though the IDS can work theoretically with a single update, it is recommended to have minimum three updates for the training phase while running more training updates is desirable.
+For our experiments, we have considered 20 runs for each topology.
+
+Once the training phase ends, the IDS calculates mean and standard errors at each of the motes and stores the  information on BLT.
+It also stores the number of update runs it considered for the BLT.
+This number contributes two folds:
+\begin{inparaenum}
+\item it indicates the reliability of the training data / baseline; and
+\item the number is used for statistical processing in case there is a need to increase the training data at a later time or data from an update is identified as acceptable is automatically included in baseline computation and the BLT is updated.
+\end{inparaenum}
+Once the BLT has been built, the IDS runs on active mood and all updates are subject to intrusion checks.
+When an update is initiated in the WSN, data pushed into the INT are filtered and relevant information related to the ongoing update populates the  IAT.
+The IDS waits upto a specific time, which is determined by the maximum time taken to complete a network-wide  update during the training phase, before it reports the findings about intrusion possibility.
+While the procedure described above is quite straight forward, it gets complicated because of the unreliable packet transmission pattern experienced by WSN due to node failure, link failure and node reboot \cite{aro04}, \cite{bec04}.
+IDS reports the findings with a provision of updating it later when an expected data from certain mote are not available within reasonable time.
+In such case, the IDS employs a packet recovery mechanism to obtain necessary information.
+
+The packet recovery mechanism is initiated when a valid packet is not available form one or more motes within  the  determined maximum time from the updates  during the training phase.
+Upon receiving signal from the IDS, the ITC initiates AM to the specific requesting a retransmission of the update time and waits further  triple time for the required AM packet. If the packet is available,  IWS is recomputed and decision is updated accordingly.
+If the packet is still not available within specified time, the node is marked as compromised or failed and a notification is generated.
 
 
 \subsection{Assumptions}
-
+\label{sc:assump}
 A single BS in the WSN
 The BS is protected and cannot be compromise
 All motes in the WSN are static
@@ -606,95 +746,28 @@ Directed towards unauthorised program image to infect the entire WSN.
 \end{itemize}
 
 
-\dme{An attacker is computationally bounded.}{This is interesting discussion, but not really relevant here AFAICS.} This is a standard
-cryptographic assumption, implying even if the attacker has
-access to supercomputers, its computing power is at most
-polynomial. Most key management schemes in the WSN
-literature are built on this assumption.
-The base station is the only trusted entity in the network.
-An attacker may introduce its own nodes in a network,
-or it may capture, compromise, and reintroduce existing
-nodes in the network, as sensor nodes are generally not
-tamper-resistant. When a node is captured, its cryptographic
-keys may be exposed to the attacker. These cryptographic
-keys may allow the compromised nodes to rejoin the
-network later and becomeinternal/insider attackers. These
-internal attackers can establish secure channels even with
-uncompromising nodes. We call internal attacker nodes that
-send out invalid data packets or corrupt data packets in
-transitpolluters.
-Pollution attacks are the focus of this paper. Attacks on
-the physical layer (e.g., jamming), data link layer (e.g., smart
-jamming), or network layer (e.g., packet dropping) are not
-considered, because countermeasures against these attacks
-are considered complementary to this work.
-
-
-
 %They exhibit highly transient loss patterns that are susceptible to changes in environmental conditions [21]. Asymmetric links are common, and prior work has shown network behavior to often be worse indoors than out, predominantly due to multi-path effects [22]. 
 %Y. Sasson, D. Cavin, and A. Schiper. Probabilistic broadcast for flooding in wireless networks. Technical Report IC/2002/54, 2002.
 %22 R. Szewczyk, J. Polastre, A. Mainwaring, and D. Culler. Lessons from a sensor network expedition. In Proceedings of the 1st European Workshop on Wireless Sensor Networks (EWSN '04), January 2004.
 
 
-Implementation of wide varieties of WSN  demands more studies to address the security issues. Sensor nodes need to address two major security issues; preserving privacy and authenticating node identity.\\
 
-%%Principle of addressing different attacks on WSN
-A person, device or entity that attempts to cause harm to the network, for example, by unauthorised access or denial of service (DoS) is a \dme{WNS}{surely WSN?} adversary. It can be a mote class or laptop attacker working inside or out of the network in active and/or passive mode. Physical layer communication is subjected to jamming or tempering that can be solved using spread spectrum communication, jamming reports, complete design of the node physical package. Data link layer is affected by collision, exhaustion and unfairness, which can be addressed by error correcting codes, collision detection technique, TDM, rate limiting. Network layer communication can be disrupted by selective forwarding, sink hole, Sybil attack, flooding; such attacks are addressed by link layer encryption and authentication, multipath routing, identity verification, authenticated broadcast. Transport layer communications can be affected by flooding, de-synchronisation, which can be solved by connectionless protocol, packet authentication including all control fields in the transport protocol header. Countermeasure techniques in WSN need physical layer protection, which may not be adequate. Cryptography can provide link layer encryption and authentication mechanism (MAC) but this is not enough. It is possible to employ carefully-designed protocols that consider routing, localization, data aggregation and so on with respect to security principles and attacker models. However, all these adaptive measures have energy and computational consequences.\\
-
-%%Suggested security techniques by different researchers
-\dme{Key Distribution techniques}{The motivation for this paragraph won't be clear to the reader. How does it connect to the preceding paragraph?} in WSN have been discussed by Eschenauer and Gligor~\cite{Gig02}. Malan, Welsh and Smith first proposed implementation of ECC in WSN~\cite{Mws}. Implementation of ECC with elliptic curve parameters is recommended by SECG~\cite{Ning08}. Privacy in WSN is ensured by protecting sensor information. Abdelzaher has discussed the techniques in detail~\cite{He07}.\\
-
-
-
-
-
-
-
-\dme{Most current standard security}{same comment regarding relevance / link of text}
-protocols were designed for two-party settings
-and do not scale to a large number of participants \cite{ShiPer04}.
-Integrated, cross-layer protocol design 
-and  optimization  becomes  a  necessity,  rather  than  a  deliberate  choice.    Furthermore,  the 
-requirements of the sensing application should be kept in mind at all times, as the success or 
-failure of the whole concept of wireless sensor networks will ultimately depend on the way in 
-which those networks fulfil the sensing tasks they are built for. \\
- 
- 
-
-Nodes within the event radius of a WSN have fair access to the wireless medium; this property is ensured by established protocols e.g. 802.11b and other variants of MAC layer protocols.
+%PacketLink is most reliable when software acknowledgements are enabled   as opposed to hardware auto acknowledgements.
+%    
+%What is the new idea I wanted to introduce?
+%What are the threats we want to deal and why?
+%Why do we limit our scope here; why detect and not prevent?
 %
-\dme{We can identify threats}{This is the beginnings of what you should be talking about, but the event-based/role-based presentation is a distraction. So far I don't think any unfamiliar reader will understand your design at this point.} based on expected outcome (probability) of transmission originated from each specific node. \\ %802.15.4 is the proposed WSN protocol
-\begin{itemize}
-\item \textbf{Event-based Approach:} It is possible to build a probability model of originated transmission for each sensor node based on historical information. This is a bottom-up approach in which raw event data generated in remote sensors are collated to arrive at a decision.%So the idea is to look at whether a node begins behaving "unusually"? E.g. a node suddenly starts sending messages at ten times the previous maximum rate?
-
-\item \textbf{Role-based Approach:} It is possible to set a threshold level for transmission originated from each sensor node based on its role. It is possible to define a probability model for centring the threshold. This is a top-down approach in which controller nodes arrive at a decision based on historical data and the related role of each sensor. %So th%So this is in some ways a refinement of the event-based approach? E.g. by adding extra metadata about WSN nodes you can more effectively ensure that, say, you don't accidentally enforce a rate limit (based on the event based approach) that is inappropriate for the application?
-
-\end{itemize}
-
-\dme{It is possible to combine symmetric key and asymmetric key}{relevance?} cryptographic approaches to deny information to such nodes in the short run and/or policy based approaches in the long run. We shall examine presently implemented security techniques in WSN and shall improve upon them by blending cryptographic approaches at lower level (MAC/Network Layer) and role/event based approaches in higher layers, e.g. presentation layer.
-
-
-
-\section{Implemetation of the Experiment}  %Methodology
-\label{sec:imp}
-\dme{PacketLink}{??} is most reliable when software acknowledgements are enabled 
-  as opposed to hardware auto acknowledgements.
-  
-  
-What is the new idea I wanted to introduce?
-What are the threats we want to deal and why?
-Why do we limit our scope here; why detect and not prevent?
-
-%What is our hypothesis about the solution?
-Network based intrusion detection attempts to identify unauthorized, illicit, and anomalous behavior based solely on network traffic. A network IDS, using either a network tap, span port, or hub collects packets that traverse a given network. Using the captured data, the IDS system processes and flags any suspicious traffic. Unlike an intrusion prevention system, an intrusion detection system does not actively block network traffic. The role of a network IDS is passive, only gathering, identifying, logging and alerting
-How in theory we want to solve it?
-
-How did we conduct our experiment?
-Details of methodologies.
-
-What are the topologies we have tested? 
-What are the rationale for choosing these topologies?
-What are the results we found?
+%%What is our hypothesis about the solution?
+%Network based intrusion detection attempts to identify unauthorized, illicit, and anomalous behavior based solely on network traffic. A network IDS, using either a network tap, span port, or hub collects packets that traverse a given network. Using the captured data, the IDS system processes and flags any suspicious traffic. Unlike an intrusion prevention system, an intrusion detection system does not actively block network traffic. The role of a network IDS is passive, only gathering, identifying, logging and alerting
+%How in theory we want to solve it?
+%
+%How did we conduct our experiment?
+%Details of methodologies.
+%
+%What are the topologies we have tested? 
+%What are the rationale for choosing these topologies?
+%What are the results we found?
 
 %This section makes the experiment reproducible
 %How did we do what we wanted to find out
