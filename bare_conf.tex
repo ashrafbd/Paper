@@ -509,7 +509,7 @@ launch several attacks on Deluge by injecting bogus or modified advertisement pa
 %In order to exhaust the energy of a node, a malicious node may continuously request the same pages or unwanted pages from a normal node to trigger the transmission of code data packets.
 
 
-\section{Design and Methodology}
+\section{Methodology and Overview of System Design}
 
 %Research Question
 %\dme{Is it possible to detect malicious software updates applied using over the air update protocol (especially Deluge) with multihop sensor networks using timing analysis approach?}{state this as a RQ in the introduction. Don't start \S4 with a hypothetical question.}
@@ -541,6 +541,93 @@ The IDS analyses the timing of update of each of the sensors in the WSN and comp
 %Protection against unauthorised access is achieved by authentication.
 %From security points of view authenticity is more important than encryption.
 %However, encryption is the typical way of achieving 
+
+\subsection{Methodology}
+\label{subsec:meth}
+
+We assume to possess the ability to observe the software update pattern in a fully functional WSN where each node generates and reports the time at which the new software update completes and starts executing.
+All motes in a WSN has a shared sense of time synchronisation which is accurate to 1~$\mu$s  and typically is achieved using TSMP protocol \cite{Pister08tsmp:time}.
+%In your system you are expecting that there's time sync. That's entirely reasonable, but it needs to be stated as an assumption about the WSN under study.
+We used deluge protocol implemented in `Contiki: The Open Source OS for the Internet of Things' for our experiments. 
+%[So this will eventually need citation and a self-contained description.]
+We used `Cooja Network Simulator' distributed with Contiki v2.7 to simulate the software update pattern using Deluge protocol. Different topologies were tested for thoroughness. 
+All tests were conducted in an environment with Contiki installed on Ubuntu 12.04.
+
+All the motes in the WSN were booted at same time running one version of a diagnostic application. 
+The application would necessarily report its time, version number and mote ID on the serial terminal every second. 
+The output from the serial terminal are logged and analysed later.
+The application in the base station dynamically begins the update process using deluge protocol after it boots and propagates another version of the software. 
+The new version of the software is transmitted to all motes in a fashion as determined by the protocol. 
+
+Whenever transfer of the new image is complete for a mote, it replaces its old version of the application and starts executing the new one. The new application would also necessarily print out its time, version number and mote ID on the serial terminal every second. 
+First time we have a mote declaring its version number of the new image is the update time for that mote. We continue running the simulator until all the motes in the WSN are updated to the new version image. All the logs are preserved and the necessary information (first reported update time for each mote) is filtered out from the log. Here necessary information means, the first time each mote reports that it is running new version of the image. The time and mote IDs are filtered out. We sort them based on the time of update. At this instance, we have the information like this:
+\begin{verbatim}
+---------------------------------
+| 	Time (in ms)	|	Mote ID	|
+---------------------------------
+\end{verbatim}
+
+\subsubsection*{Building the Baseline Data}
+We have catered for multiple runs to build the baseline data that were compared against intrusion runs later.
+We have taken data from 20 runs initiated from the sink for each of the topologies tested.
+The output data from these runs were statistically treated to find out the `mean' time at which each of the nodes are updated with the new image.
+Besides the `mean', the `standard error' was also identified at each of the motes in the WSN.
+Both `mean' and `standard error' were used as input to the IDS to calculate the IWS according to the utility function shown in Equation-~\ref{eqn2}. 
+
+\subsubsection*{Calculating IWS}
+Similar approach to building baseline data was followed to analyse data for the IWS.
+Update time of each of the motes during an update run were filtered from the log.
+The update time were processed along with the `mean' and `standard error' from baseline data according to the utility function in Equation-~\ref{eqn2}. 
+
+\begin{enumerate}
+\item Subtract the new update time from the corresponding `mean' of reference update time for each of the motes to calculate the absolute difference. For example, new update time of updated mote `$n$'(new) is subtracted from `mean' update time found from the baseline data for mote `$n$'.
+\item The absolute difference is divided by a function of `standard error' to avoid any `division by zero scenario'. This also smooths the data to avoid unrelated variations.
+\item Sum up the the resulting individual scores to find out the total IWS for the update.
+\end{enumerate}
+The resulting numbers indicated the nature of the update as has been described in Subsection-~\ref{subsec:sysdeg}.
+This gives us an approximation of abnormality of the new update pattern. The higher the score, the more dissimilar is the pattern. 
+However, the score does not contain topology awareness, as such a low score must be checked against topological orientation.
+% [HOW TO DO THIS IS YET TO BE DEVISED].
+
+
+
+\subsection{Threat Model}
+
+%What are the security aspects it does not handle?
+%Why does not it handle them?
+
+Directed towards unauthorised program image to infect the entire WSN.
+\begin{itemize}
+\item Node failure
+\item Node compromise
+\item Malicious node update
+\item Popping up of intruder node
+\end{itemize}
+
+\subsection{Assumptions}
+\label{sc:assump}
+A single sink in the WSN.
+The sink is protected and cannot be compromised.
+All motes in the WSN are static.
+We have knowledge about the topology [NOT UTILISED].
+The software update behaviour in the WSN is transparent to the IDS.
+The IDS resides externally outside the WSN (not in motes).
+
+
+\begin{itemize}
+	\item	The WSN is of homogeneous nature and works in the same network
+	\item	Each of the motes are  connected via wireless to at least another mote
+	\item	Whenever possible, there are more than one route to reach each of the motes
+	\item	The WSN is static in nature
+	\item	Whenever a new image is updated in a mote, it sends a conformation active message to all base stations in the WSN
+\end{itemize}
+
+
+
+\subsection{Algorithm}
+\label{subsec:alg}
+NOT STATED / DISCUSSED IN THIS PAPER
+
 
 
 \subsection{System Design}
@@ -593,6 +680,7 @@ The motes in the network perform the action of endorsing update time.
 It initiates an AM with the update time information to the sink. 
 An AM has several fields: destination address, type identifier that indicates the update time information and the protocol, timing information and a checksum value.
 [DO WE WANT TO INCLUDE THE PATH TAGGING; MAY BE LATER - IT INCREASES RELIABILITY, NOT DIRECTLY $IDS$ ACTIVITY?]
+[path tagging is good, but in all cases, what’s the risk from intruders messing with the reported data?]
 The packet is transported over the network.
 When it arrives at the sink, the checksum value is examined by the ITC to ensure that the packet content has not been altered enroute.
 The ITC then inserts the update time, mote ID and related information to the NDB in the IDS.
@@ -613,25 +701,21 @@ It determines the changes in the statistics of the update time and calculates IW
 %\end{equation}
 \begin{equation}
 \label{eqn2} 
-	f_2 = \sum \limits_{i=0}^{n} \frac{\mu_i - t_i }{\sigma_i + 1}
+	f_2 = \sum \limits_{i=0}^{n} \frac{\left| \mu_i - t_i \right|}{\sigma_i + 1}
 \end{equation}
 where, 
 
-	\hspace {2cm} $i$ --- Identification of the Mote  
+	\hspace {.2cm} $i$ --- Identification of the Mote  
 	
-	\hspace {2cm} $t_i$ --- Image Update Time at Mote \emph{i} 
+	\hspace {.2cm} $t_i$ --- Image Update Time at Mote \emph{i} 
 	
-	\hspace {2cm} $\mu_i$ --- Mean Update Time at Mote \emph{i} 
+	\hspace {.2cm} $\mu_i$ --- Mean Update Time at Mote \emph{i} 
 	
-	\hspace {2cm} $\sigma_i$ --- Standard Deviation of Update Time at Mote \emph{i} 
+	\hspace {.2cm} $\sigma_i$ --- Standard Deviation of Update Time at Mote \emph{i} 
 	
 The IDS considers an increase of IWS upto 10\% from the baseline value to be safe and marks as `GREEN' zone, an increase above 25\% to be possible intrusion and is marked as `RED' zone.
 However, an increase in 10\% --- 25\% can neither be considered safe, nor an intrusion, hence is marked as `GREY' that indicates a situation where rules are not known.
 However, the thresholds are not conclusive and may require some variation based on the density around the sink and scale of deployment.
-
-\subsection{Algorithm}
-\label{subsec:alg}
-NOT STATED / DISCUSSED IN THIS PAPER
 
 \subsubsection{Database Structure}
 \label{ssc:db}
@@ -714,36 +798,7 @@ Upon receiving signal from the IDS, the ITC initiates AM to the specific request
 If the packet is still not available within specified time, the node is marked as compromised or failed and a notification is generated.
 
 
-\subsection{Assumptions}
-\label{sc:assump}
-A single BS in the WSN
-The BS is protected and cannot be compromise
-All motes in the WSN are static
-We have knowledge about the topology
-The software update behaviour in the WSN is transparent to the IDS
-The IDS resides externally outside the WSN (not in motes)
 
-
-\begin{itemize}
-	\item	The WSN is of homogeneous nature and works in the same network
-	\item	Each of the motes are  connected via wireless to at least another mote
-	\item	Whenever possible, there are more than one route to reach each of the motes
-	\item	The WSN is static in nature
-	\item	Whenever a new image is updated in a mote, it sends a conformation active message to all base stations in the WSN
-\end{itemize}
-
-\subsection{Threat Model}
-
-%What are the security aspects it does not handle?
-%Why does not it handle them?
-
-Directed towards unauthorised program image to infect the entire WSN.
-\begin{itemize}
-\item Node failure
-\item Node compromise
-\item Malicious node update
-\item Popping up of intruder node
-\end{itemize}
 
 
 %They exhibit highly transient loss patterns that are susceptible to changes in environmental conditions [21]. Asymmetric links are common, and prior work has shown network behavior to often be worse indoors than out, predominantly due to multi-path effects [22]. 
@@ -780,8 +835,46 @@ Directed towards unauthorised program image to infect the entire WSN.
 %and then others hypothesis results
 %
 
+
+
+
 \section{Evaluation}
 \label{sec:eval}
+
+%the results they achieved using those methods. In addition, they present their analysis of the data and describe some of the interpretations and implications of their work.
+%The data collected during the research are presented in this section, both in written form and using tables, graphs, and figures (see our Using Graphs and Visual Data module). In addition, all statistical and data analysis techniques used are presented (see our Statistics in Science module). Importantly, the data should be presented separately from any interpretation by the authors. This separation of data from interpretation serves two purposes: First, it gives other scientists the opportunity to evaluate the quality of the actual data, and second, it allows others to develop their own interpretations of the findings based on their background knowledge and experience. 
+%include both the raw data and their analysis. Keeping the raw data (in the form of a photograph) facilitated reanalysis by other scientists:
+
+%Discussion and conclusions: In this section, authors present their interpretation of the data, often including a model or idea they feel best explains their results. They also present the strengths and significance of their work. Naturally, this is the most subjective section of a scientific research article as it presents interpretation as opposed to strictly methods and data, but it is not speculation by the authors. Instead, this is where the authors combine their experience, background knowledge, and creativity to explain the data and use the data as evidence in their interpretation 
+% Often, the discussion section includes several possible explanations or interpretations of the data; the authors may then describe why they support one particular interpretation over the others. This is not just a process of hedging their bets – this how scientists say to their peers that they have done their homework and that there is more than one possible explanation. In the woodpecker article, for example, the authors go to great lengths to describe why they believe the bird they saw is an ivory-billed woodpecker rather than a variant of the more common pileated woodpecker, knowing that this is a likely potential rebuttal to their initial findings. A final component of the conclusions involves placing the current work back into a larger context by discussing the implications of the work. The authors of the woodpecker article do so by discussing the nature of the woodpecker habitat and how it might be better preserved.
+
+The proposed IDS system and its technique were evaluated in comprehensive simulations.
+The simulation environment has been specified in Subsection-~\ref{subsec:meth}.
+The raw data were processed using an automation that could analyse the data to produce the IWS.
+
+
+
+
+
+\begin{figure*}[t!]
+\label{fig:ellip}
+    \centering
+    \begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.2in]{Elliptical}
+        \label{subfig:elliptopo}
+        \caption{Topology}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.2in]{Elliptical_Graph}
+        \label{subfig:ellipgraph}
+        \caption{Graph from Elliptical Topology}
+    \end{subfigure}
+    \caption{Caption place holder}
+\end{figure*}
+
 Interpretation of the results.
 Our argument in support of the results.
 
@@ -843,6 +936,15 @@ Wrap the whole thing up;
 %~ Introduce the most popular academic and professional IoT simulators in which security can be implemented. This includes discussion on the main features of current IoT security simulations. Also it includes demonstration by examples how the performance of IoT security can be evaluated and measured. 
 
 %http://www.wikicfp.com/cfp/servlet/event.showcfp?eventid=38207
+
+Signature\hspace{0.5cm} \makebox[1.5in]{\hrulefill}
+\begin{tabbing}
+Contact Address: \= 128, Owheo Building\\
+\> 133, Union Street (West)\\
+\> Dunedin - 9010, New Zealand
+\end{tabbing}
+
+
 
 \bibliographystyle{IEEEtran}
 \bibliography{bare_conf}
