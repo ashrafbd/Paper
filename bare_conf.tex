@@ -5,6 +5,8 @@
 \usepackage{cite}
 \usepackage{paralist}
 \usepackage[pdftex]{graphicx}
+\usepackage{caption}
+\usepackage{subcaption}
 \graphicspath{{.}{images/}} 
 \DeclareGraphicsExtensions{.pdf,.jpeg,.png,.jpg}
 \usepackage[cmex10]{amsmath}
@@ -14,6 +16,7 @@
 
 \newcommand{\dme}[2]{\pdfmarkupcomment[markup=Highlight,color=yellow]{#1}{#2}}
 \newcommand{\todo}[1]{\pdfmarkupcomment[markup=Highlight,color=red]{#1}{todo}}
+\newcommand*{\bd}[1]{\multicolumn{1}{|c}{\bfseries #1}}
 
 % correct bad hyphenation here
 \hyphenation{op-tical net-works semi-conduc-tor}
@@ -701,7 +704,7 @@ It determines the changes in the statistics of the update time and calculates IW
 %\end{equation}
 \begin{equation}
 \label{eqn2} 
-	f_2 = \sum \limits_{i=0}^{n} \frac{\left| \mu_i - t_i \right|}{\sigma_i + 1}
+	IWS = \sum \limits_{i=0}^{n} \frac{\left| \mu_i - t_i \right|}{\sigma_i + 1}
 \end{equation}
 where, 
 
@@ -713,8 +716,8 @@ where,
 	
 	\hspace {.2cm} $\sigma_i$ --- Standard Deviation of Update Time at Mote \emph{i} 
 	
-The IDS considers an increase of IWS upto 10\% from the baseline value to be safe and marks as `GREEN' zone, an increase above 25\% to be possible intrusion and is marked as `RED' zone.
-However, an increase in 10\% --- 25\% can neither be considered safe, nor an intrusion, hence is marked as `GREY' that indicates a situation where rules are not known.
+The IDS considers an increase of IWS upto 10\% from the baseline value to be safe and marks as `GREEN' zone, an increase above 30\% to be possible intrusion and is marked as `RED' zone.
+However, an increase in 10\% --- 30\% can neither be considered safe, nor an intrusion, hence is marked as `GREY' that indicates a situation where rules are not known.
 However, the thresholds are not conclusive and may require some variation based on the density around the sink and scale of deployment.
 
 \subsubsection{Database Structure}
@@ -746,7 +749,7 @@ where, $mote\_id$  and $timestamp$ are same as the corresponding fields in INT.
 Every time a decision on an update has been made and a new update is detected, this table is flashed.
 
 \subsubsection{Activities in the Network}
-\label{ssc:acnet}
+\label{ssc:actnet}
 As part of enhancement into the deluge protocol, the motes are enriched with the prior knowledge of the sink or sinks in the WSN.
 Whenever an update takes place in a mote, it reboots with the new software running and stores the bootup time in its memory.
 I NEED TO CONFIRM IF THE TIME IS ALREADY SAVED WITH THE IMAGE AS PART OF DELUGE PROTOCOL IMAGE/GOLDEN IMAGE.
@@ -754,23 +757,23 @@ The locally stored information  is used later in case it requires to recover fro
 The information $type$, $mote\_id$,  $time\_stamp$,$upd\_seq$ are packed along with an additional checksum in an AM packet and forwarded to the sink/sinks.
 The AM has the following information in the packet:
 \begin{verbatim}
-|--------------------------------------------------|
-|         |----------------------------------------|
-|Source ID|message type|timestamp|upd_seq|checksum||
-|---------|----------------------------------------|
+|------------------------------------------|
+|Source|-----------------------------------|
+|  ID  |msgtype|timestamp|upd_seq|checksum||
+|------|-----------------------------------|
 
-Figure: We need to draw a better picture
+Figure: Need to draw a better picture
 \end{verbatim}
 The AM packet is relayed through the network to the sink.
 
 \subsubsection{Activities in the Sink}
-\label{ssc:acsink}
+\label{ssc:actsink}
 As an AM arrives from the radio network to the sink, the ITC application running on the sink verifies the checksum.
 If the checksum fails, the packet is discarded and failure recovery is initiated once only in coordination with the IDS.
 However, if the AM passes checksum, the ITC application extracts the relevant information and populates the INT in the resident host system. 
 
 \subsubsection{Activities in the IDS}
-\label{ssc:acids}
+\label{ssc:actids}
 An update is typically initiated from the host system where the IDS resided.
 The IDS constantly monitors the programming port and coordinates with the ITC. 
 They automatically identify the first update as input for baseline training data.
@@ -848,11 +851,22 @@ If the packet is still not available within specified time, the node is marked a
 %Discussion and conclusions: In this section, authors present their interpretation of the data, often including a model or idea they feel best explains their results. They also present the strengths and significance of their work. Naturally, this is the most subjective section of a scientific research article as it presents interpretation as opposed to strictly methods and data, but it is not speculation by the authors. Instead, this is where the authors combine their experience, background knowledge, and creativity to explain the data and use the data as evidence in their interpretation 
 % Often, the discussion section includes several possible explanations or interpretations of the data; the authors may then describe why they support one particular interpretation over the others. This is not just a process of hedging their bets – this how scientists say to their peers that they have done their homework and that there is more than one possible explanation. In the woodpecker article, for example, the authors go to great lengths to describe why they believe the bird they saw is an ivory-billed woodpecker rather than a variant of the more common pileated woodpecker, knowing that this is a likely potential rebuttal to their initial findings. A final component of the conclusions involves placing the current work back into a larger context by discussing the implications of the work. The authors of the woodpecker article do so by discussing the nature of the woodpecker habitat and how it might be better preserved.
 
-The proposed IDS system and its technique were evaluated in comprehensive simulations.
-The simulation environment has been specified in Subsection-~\ref{subsec:meth}.
-The raw data were processed using an automation that could analyse the data to produce the IWS.
-
-
+\begin{table*}[t!]
+\centering
+\begin{tabular}{|l|*{20}{r|}r}
+\hline
+\bd{Mote ID}           & \bd{1} & \bd{2} & \bd{3} & \bd{4} & \bd{5} & \bd{6} & \bd{7} & \bd{8} & \bd{9} & \bd{10} & \bd{11} & \bd{12} & \bd{13} & \bd{14} & \bd{15} & \bd{16} & \bd{17} & \bd{18} & \bd{19} & \bd{20} \\
+%Mote ID           & 1 & 2 & 3 & 4 & 5  & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15  & 16 & 17 & 18 & 19 & 20 \\
+\hline
+$\mu$ 			  & 0 & 5 & 5 & 6 & 22 & 36& 37&43 &44 & 44 & 44 & 44 & 44 & 45 & 44  & 33 & 24 & 5 & 3 & 5 \\
+$\sigma$            & 0 &19 & 19& 69&139 &213&276&344&377&432 &432 &432 &377 &335 &273 & 207&137 & 68 & 17 & 19 \\
+$IWS$
+                  &0.5&35 &19 &128&262 &387&473&653&669&774&772 &1052&791 &645 &519  &454 &207 & 126& 19 & 19 \\
+\hline
+\end{tabular}
+\caption{Statistics of intrusion initiated from different motes}
+\label{tab:ellip}
+\end{table*}
 
 
 
@@ -861,19 +875,45 @@ The raw data were processed using an automation that could analyse the data to p
     \centering
     \begin{subfigure}[b]{0.5\textwidth}
         \centering
-        \includegraphics[height=1.2in]{Elliptical}
+        \includegraphics[height=1in, width=4in]{Elliptical}
         \label{subfig:elliptopo}
         \caption{Topology}
     \end{subfigure}%
     ~ 
     \begin{subfigure}[b]{0.5\textwidth}
         \centering
-        \includegraphics[height=1.2in]{Elliptical_Graph}
+        \includegraphics[height=1.2in]{Elliptical_column}
         \label{subfig:ellipgraph}
         \caption{Graph from Elliptical Topology}
     \end{subfigure}
     \caption{Caption place holder}
 \end{figure*}
+
+The proposed IDS system and its technique were evaluated in comprehensive simulations.
+The simulation environment has been specified in Subsection-~\ref{subsec:meth}.
+The raw data were processed using an automation scheme that processed the raw data using a bash script.
+This semi-processed data were further processed using a programme written in cpp to make them suitable for simple mathematical calculations.
+Then these data were related and  analyses using a spreadsheet programme to produce the IWS.
+
+The effects of the proposed IDS were tested indifferent topologies, namely linear, circular, elliptical, double rings, wide lines/grid, tree and other topologies.
+While discussing all of these topologies are useful, we shall concentrate our discussion on results and findings from one of the topologies.
+
+\subsection{Data1 + Discussion}
+
+We have selected data from elliptical topology for several reasons.
+The shape of the ellipse has been designed such that motes on either side of minor axis are within each others transmission range and motes on the either side of the major axis are not.
+Total 20 nodes were deployed with the minor axis approximately 30 mitre.
+The transmission power level is kept at 100\% which has a  transmission range of 50 mitre and is able to interfere other transmissions upto 100 mitre apart.
+The motes are placed at a space of 35 mitre along the circumference of the ellipse. 
+The deployment enables multiple transmission paths to all the motes, achieves redundancy and contributes to reliable image transfer. 
+Extending the minor axis so that motes on either side remain out of transmission range, makes the topology equivalent to a circle, while contracting it is equivalent to a grid or even a linear topology.
+Overall the simulations ran well with expected results.
+
+We assigned mote ID 1 as the sink and ran 20 updates initiated from the sink.
+The output data from these runs were processed and statistically treated to find out the `mean' and `standard error' of the  time at which each of the nodes are updated with the new image.
+Findings from the 
+
+\subsection{write here}
 
 Interpretation of the results.
 Our argument in support of the results.
