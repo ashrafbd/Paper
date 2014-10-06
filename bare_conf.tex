@@ -911,9 +911,64 @@ Overall the simulations ran well with expected results.
 
 We assigned mote ID 1 as the sink and ran 20 updates initiated from the sink.
 The output data from these runs were processed and statistically treated to find out the `mean' and `standard error' of the  time at which each of the nodes are updated with the new image.
-Findings from the 
+
+
+Table-~\ref{tab:ellip} shows the statistical measurements obtained at different motes and the IWS measured when each of the motes were considered as intrusion point.
+It can be clearly seen that IWS at the intrusion points differ considerably.
+The first row in Table-~\ref{tab:ellip} contain the Node IDs that are headers for the data displayed underneath.
+The next two rows describe the `mean' and `standard error' that were established from the 20 legitimate updates initiated from the sink.
+Each cell in the last row contains the IWS calculated using function shown in Equation-~\ref{eqn2} test runs initiated from the node indicated at top of the column.
+The data shown in the table can best be interpreted with Figure-~\ref{fig:ellip}. 
+Figure-~\ref{subfig:elliptopo} shows the actual relative deployment of the motes with mote ID written at the center of the tiny circle and IWS measured when an intrusion attempt has been initiated from the mote. 
+The figure additionally divides the region in GREEN, GREY and RED zones according to the logic discussed in \ref{ssc:actids}.
+The graph in  Figure-~\ref{subfig:ellipgraph} shows the relative measures of the IWS from the motes.
+
+According to the data presented in Table-~\ref{tab:ellip}, when we analyse baseline data, the motes which are further away from the sink are found to have higher `mean' and `standard error' in terms of update time.  
+However, `mean' does not vary to a great extent for relatively small distance difference when multiple paths are present.
+The availability of more redundant paths make the image transfer more efficient and reliable.
+Hence, even remaining at considerably different distances from the sink, mote ID 8, 9, 10, 11, 12, 13, 14 and 15 in the elliptical topology have quite similar mean update time.
+However, `standard error' increases dramatically as the motes are placed further from the sink.
+The measurement established from the baseline data shows that motes closer to the sink have lower `standard error' which increases sharply with the increase in distance.
+
+On the other hand, the utility function calculated from the Equation-~\ref{eqn2} is designed to neutralise the changes in `mean' and `standard error' which are expected to contribute to a near $zero$ IWS that is further classified as GREEN zone for a legitimate software update. Table-~\ref{tab:ellip} and Figure-~\ref{fig:ellip} shows defined zones and IWS measured when intrusion was initiated at different motes.
+
+The IWS increases linearly with the increase in distance from the sink.
+The `distance' term can be misleading in the context of our discussion and demands further clarification.
+Euclidean distance between a mote and the sink does not make useful sense as the packets in the network must travel using a relay mechanism through other motes in the network.
+Because of the availability of the multiple paths, it is not possible to quantify the exact distance that a packet would travel while transporting form a mote to the sink.
+However, an estimation of most probable link path based on the connectivity may be considered.
+
+IWS is considerable higher for intrusion at distant motes than ones which are close to the sink.
+This phenomena is topology which implies connectivity dependent.
+It is possible that if IWS in a network are organised in a specific order, which could be close to the Figure-~\ref{subfig:ellipgraph}, it would represent/resemble   the original topology in some fashion.
+This implication would be more evident once we discuss more topologies in the upcoming paragraphs.
+
+%Identifying node failure and node compromise
+The IWS is also able to detect node failures in the WSN.
+In case of a node not reporting its its update time is handled by a error recovery procedure put in place by the IDS.
+However, the recovery procedure fails in such cases resulting into contributing towards the increased IWS that is reported as an intrusion.
+The IDS structure is such that it has an expected pattern and shape of IWS for an intrusion at some specific point.
+If the shape is distorted to a great extent, it indicates some unusualness which can be attributed to some other phenomena like node failure or compromise.
+It might also indicate a different type of attack associated with a physical intrusion.
+An interpretation form the IDS view of the topology would enable identification of some other types of attacks in WSN like node relocation, node repudiation, node compromise.
+The node failure or node compromise can take place concurrently with or without intrusion.
+%However, in case of a node failure, it cannot recover  and would contribute to the 
+
 
 \subsection{write here}
+
+Discuss other topologies
+
+
+Insight for secure deployment. which topologies would work better - idea
+
+Insight for a deployment that would ensure better connectivity
+
+
+
+
+
+
 
 Interpretation of the results.
 Our argument in support of the results.
