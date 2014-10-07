@@ -574,17 +574,17 @@ First time we have a mote declaring its version number of the new image is the u
 We have catered for multiple runs to build the baseline data that were compared against intrusion runs later.
 We have taken data from 20 runs initiated from the sink for each of the topologies tested.
 The output data from these runs were statistically treated to find out the `mean' time at which each of the nodes are updated with the new image.
-Besides the `mean', the `standard error' was also identified at each of the motes in the WSN.
-Both `mean' and `standard error' were used as input to the IDS to calculate the IWS according to the utility function shown in Equation-~\ref{eqn2}. 
+Besides the `mean', the `standard deviation' was also identified at each of the motes in the WSN.
+Both `mean' and `standard deviation' were used as input to the IDS to calculate the IWS according to the utility function shown in Equation-~\ref{eqn2}. 
 
 \subsubsection*{Calculating IWS}
 Similar approach to building baseline data was followed to analyse data for the IWS.
 Update time of each of the motes during an update run were filtered from the log.
-The update time were processed along with the `mean' and `standard error' from baseline data according to the utility function in Equation-~\ref{eqn2}. 
+The update time were processed along with the `mean' and `standard deviation' from baseline data according to the utility function in Equation-~\ref{eqn2}. 
 
 \begin{enumerate}
 \item Subtract the new update time from the corresponding `mean' of reference update time for each of the motes to calculate the absolute difference. For example, new update time of updated mote `$n$'(new) is subtracted from `mean' update time found from the baseline data for mote `$n$'.
-\item The absolute difference is divided by a function of `standard error' to avoid any `division by zero scenario'. This also smooths the data to avoid unrelated variations.
+\item The absolute difference is divided by a function of `standard deviation' to avoid any `division by zero scenario'. This also smooths the data to avoid unrelated variations.
 \item Sum up the the resulting individual scores to find out the total IWS for the update.
 \end{enumerate}
 The resulting numbers indicated the nature of the update as has been described in Subsection-~\ref{subsec:sysdeg}.
@@ -738,7 +738,7 @@ The Baseline Table (BLT) holds the processed information from the legitimate run
 \begin{verbatim}
 mote_id, mu, sigma
 \end{verbatim}
-where, $mote\_id$ is the source node ID, $mu$ is the mean time and $sigma$ is the standard error for each $mote\_id$ from all legitimate runs.
+where, $mote\_id$ is the source node ID, $mu$ is the mean time and $sigma$ is the standard deviation for each $mote\_id$ from all legitimate runs.
 
 The Intrusion Activity Table (IAT) filters out necessary information from INT about most recent software update and contributes to the performance of the IDS.
 The table has two fields:
@@ -782,7 +782,7 @@ Result from all updates run during the training period are statistically treated
 Though the IDS can work theoretically with a single update, it is recommended to have minimum three updates for the training phase while running more training updates is desirable.
 For our experiments, we have considered 20 runs for each topology.
 
-Once the training phase ends, the IDS calculates mean and standard errors at each of the motes and stores the  information on BLT.
+Once the training phase ends, the IDS calculates mean and standard deviations at each of the motes and stores the  information on BLT.
 It also stores the number of update runs it considered for the BLT.
 This number contributes two folds:
 \begin{inparaenum}
@@ -855,19 +855,18 @@ If the packet is still not available within specified time, the node is marked a
 \centering
 \begin{tabular}{|l|*{20}{r|}r}
 \hline
-\bd{Mote ID}           & \bd{1} & \bd{2} & \bd{3} & \bd{4} & \bd{5} & \bd{6} & \bd{7} & \bd{8} & \bd{9} & \bd{10} & \bd{11} & \bd{12} & \bd{13} & \bd{14} & \bd{15} & \bd{16} & \bd{17} & \bd{18} & \bd{19} & \bd{20} \\
+\bd{Node ID}           & \bd{1} & \bd{2} & \bd{3} & \bd{4} & \bd{5} & \bd{6} & \bd{7} & \bd{8} & \bd{9} & \bd{10} & \bd{11} & \bd{12} & \bd{13} & \bd{14} & \bd{15} & \bd{16} & \bd{17} & \bd{18} & \bd{19} & \bd{20} \\
 %Mote ID           & 1 & 2 & 3 & 4 & 5  & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15  & 16 & 17 & 18 & 19 & 20 \\
 \hline
 $\mu$ 			  & 0 & 5 & 5 & 6 & 22 & 36& 37&43 &44 & 44 & 44 & 44 & 44 & 45 & 44  & 33 & 24 & 5 & 3 & 5 \\
 $\sigma$            & 0 &19 & 19& 69&139 &213&276&344&377&432 &432 &432 &377 &335 &273 & 207&137 & 68 & 17 & 19 \\
-$IWS$
+$\mathit{IWS}$
                   &0.5&35 &19 &128&262 &387&473&653&669&774&772 &1052&791 &645 &519  &454 &207 & 126& 19 & 19 \\
 \hline
 \end{tabular}
-\caption{Statistics of intrusion initiated from different motes}
+\caption{Mean and Standard Deviations of the motes and IWS of intrusion initiated from different motes. Further explained in Figure-~\ref{fig:ellip}}
 \label{tab:ellip}
 \end{table*}
-
 
 
 \begin{figure*}[t!]
@@ -877,16 +876,16 @@ $IWS$
         \centering
         \includegraphics[height=1in, width=4in]{Elliptical}
         \label{subfig:elliptopo}
-        \caption{Topology}
+        \caption{IWS and Relative position of nodes}
     \end{subfigure}%
     ~ 
     \begin{subfigure}[b]{0.5\textwidth}
         \centering
         \includegraphics[height=1.2in]{Elliptical_column}
         \label{subfig:ellipgraph}
-        \caption{Graph from Elliptical Topology}
+        \caption{Comparison of IWS at different motes}
     \end{subfigure}
-    \caption{Caption place holder}
+    \caption{Relative position and comparison of IWS for intrusion at different motes from data in Table-~\ref{tab:ellip}}
 \end{figure*}
 
 The proposed IDS system and its technique were evaluated in comprehensive simulations.
@@ -910,27 +909,27 @@ Extending the minor axis so that motes on either side remain out of transmission
 Overall the simulations ran well with expected results.
 
 We assigned mote ID 1 as the sink and ran 20 updates initiated from the sink.
-The output data from these runs were processed and statistically treated to find out the `mean' and `standard error' of the  time at which each of the nodes are updated with the new image.
+The output data from these runs were processed and statistically treated to find out the `mean' and `standard deviation' of the  time at which each of the nodes are updated with the new image.
 
 
 Table-~\ref{tab:ellip} shows the statistical measurements obtained at different motes and the IWS measured when each of the motes were considered as intrusion point.
 It can be clearly seen that IWS at the intrusion points differ considerably.
 The first row in Table-~\ref{tab:ellip} contain the Node IDs that are headers for the data displayed underneath.
-The next two rows describe the `mean' and `standard error' that were established from the 20 legitimate updates initiated from the sink.
+The next two rows describe the `mean' and `standard deviation' that were established from the 20 legitimate updates initiated from the sink.
 Each cell in the last row contains the IWS calculated using function shown in Equation-~\ref{eqn2} test runs initiated from the node indicated at top of the column.
 The data shown in the table can best be interpreted with Figure-~\ref{fig:ellip}. 
 Figure-~\ref{subfig:elliptopo} shows the actual relative deployment of the motes with mote ID written at the center of the tiny circle and IWS measured when an intrusion attempt has been initiated from the mote. 
 The figure additionally divides the region in GREEN, GREY and RED zones according to the logic discussed in \ref{ssc:actids}.
 The graph in  Figure-~\ref{subfig:ellipgraph} shows the relative measures of the IWS from the motes.
 
-According to the data presented in Table-~\ref{tab:ellip}, when we analyse baseline data, the motes which are further away from the sink are found to have higher `mean' and `standard error' in terms of update time.  
+According to the data presented in Table-~\ref{tab:ellip}, when we analyse baseline data, the motes which are further away from the sink are found to have higher `mean' and `standard deviation' in terms of update time.  
 However, `mean' does not vary to a great extent for relatively small distance difference when multiple paths are present.
 The availability of more redundant paths make the image transfer more efficient and reliable.
 Hence, even remaining at considerably different distances from the sink, mote ID 8, 9, 10, 11, 12, 13, 14 and 15 in the elliptical topology have quite similar mean update time.
-However, `standard error' increases dramatically as the motes are placed further from the sink.
-The measurement established from the baseline data shows that motes closer to the sink have lower `standard error' which increases sharply with the increase in distance.
+However, `standard deviation' increases dramatically as the motes are placed further from the sink.
+The measurement established from the baseline data shows that motes closer to the sink have lower `standard deviation' which increases sharply with the increase in distance.
 
-On the other hand, the utility function calculated from the Equation-~\ref{eqn2} is designed to neutralise the changes in `mean' and `standard error' which are expected to contribute to a near $zero$ IWS that is further classified as GREEN zone for a legitimate software update. Table-~\ref{tab:ellip} and Figure-~\ref{fig:ellip} shows defined zones and IWS measured when intrusion was initiated at different motes.
+On the other hand, the utility function calculated from the Equation-~\ref{eqn2} is designed to neutralise the changes in `mean' and `standard deviation' which are expected to contribute to a near $zero$ IWS that is further classified as GREEN zone for a legitimate software update. Table-~\ref{tab:ellip} and Figure-~\ref{fig:ellip} shows defined zones and IWS measured when intrusion was initiated at different motes.
 
 The IWS increases linearly with the increase in distance from the sink.
 The `distance' term can be misleading in the context of our discussion and demands further clarification.
