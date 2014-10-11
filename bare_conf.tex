@@ -174,8 +174,11 @@ AM enables a centralised view of a network-wide knowledge  that is processed and
 
 
 %My Suggested schemes
-\dme{This work's contributions are two fold.}{A good start! :-) }
-We have analyzed 
+This work's contributions are two fold.
+\begin{inparaenum}
+\item The IDS identifies the anomaly in software update pattern in terms of quantitative score. The higher score indicates a higher probability of intrusion at some point in the WSN. The score can be deterministically classified when some additional information is available.
+\item The scheme can provide useful insight for designing secure WSN i.e. the IDS expectations may be utilised to 
+\end{inparaenum}
 
 We have studied how the different  algorithm parameters %
 
@@ -202,8 +205,8 @@ We have studied how the different  algorithm parameters %
 The rest of this paper is structured in the following way. In Section \ref{sec:lit}, \dme{we discuss the security and intrusion primitives that are talked about in the WSN arena.}{How about ``We provide an overview of related research work''?}
 We try to find out what security aspects have not been addressed by the present  security researchers and the reasons behind \dme{any security deficiencies}{(``the reasons behind'' needs some object, such as what I've added.}.
 In Section \ref{sec:del}, we explain the main concepts of Deluge and its special security measures that have been implemented on Deluge. 
-We present design of our proposed algorithm  in Section \ref{sec:deg} and explain how it is connected to the sensor node. 
-In Section \ref{sec:imp}, we have explained the experiment methodology and its implementation details.
+%We present design of our proposed algorithm  in Section \ref{sec:deg} and explain how it is connected to the sensor node. 
+In Section \ref{sec:meth}, we have explained the experiment methodology and its implementation details.
 We then present our evaluation of the experiment in Section \ref{sec:eval}. A few difficulties that we ran into throughout
 the development of this experiment are also commented in this section. 
 Finally, we conclude our arguments in Section \ref{sec:conc}.
@@ -512,87 +515,159 @@ launch several attacks on Deluge by injecting bogus or modified advertisement pa
 %In order to exhaust the energy of a node, a malicious node may continuously request the same pages or unwanted pages from a normal node to trigger the transmission of code data packets.
 
 
-\section{Methodology and Overview of System Design}
+\section{Methods}
+\label{sec:meth}
 
-%Research Question
-%\dme{Is it possible to detect malicious software updates applied using over the air update protocol (especially Deluge) with multihop sensor networks using timing analysis approach?}{state this as a RQ in the introduction. Don't start \S4 with a hypothetical question.}
-%We hypothesize that it is possible to detect intrusion by analysing the timing of the software update of the motes in WSN.
-%The pattern generated from the analysis is dependent on relative physical position of the motes and time of update.
-%
-%We perform a comprehensive evaluation of \dme{mote update time}{what does this mean?}.
-%\dme{After a new data object is delivered to the mote and the mote uses the bootloader to start running the new data object is the time we are interested in.}{Not a sentence.}
-%%[You're not being precise about what type of update this is. It's a software update, and the time is the time to complete the verified propagation of that software update. (I think?)]
-%%using an OTA [Abbreviation should be used first alongside their expansions ... although this one may well occur earlier in the thesis, of course...]
-%Measurement of the update time has been simulated on different topologies. 
-%\dme{Using different topologies provides us with topological diversity which is at par with the 
-%randomness that is expected in a real-world WSN deployment.[Some are random, some aren't: I'm not sure that those contexts can be intermixed ...]}{I'm not convinced.}
-%Study of different topologies is a structured way of studying such deployments
-%\label{sec:deg}
-%The research is aimed at detecting intrusion attempts by analysing deviation from expected behaviour of the motes during a software update using Deluge protocol.
-%The following subsections describe the proposed system. Subsection \ref{subsec:sysdeg} presents a system
-%overview. The subsequent sections are dedicated to in-depth descriptions of the main
-%components of the framework. The special case of low data rate networks is dealt with
-%in Section 4.6.
-
-The proposed IDS is external to the WSN, resides on a computing system that is physically connected to the sink.
-It utilises existing packet transmission protocols to collect related information. The information, which is predominantly identification of the mote $i$ and the time at which the new image updated the mote $t_i$, is then processed.
-The IDS analyses the timing of update of each of the sensors in the WSN and computes a `Surprise Score' or `Intrusion Warning Score' (IWS) using an algorithmic function to indicate a possible intrusion, i.e., a probable illegitimate update.
+The proposed IDS and its techniques were evaluated in comprehensive simulations.
+While the system has been elaborately designed and aimed at testbed evaluation, it has not yet been performed at this stage of the research. 
+The testbed implementation will be evaluated at some point in the future.
+The simulation environment possessed the ability to observe the software update pattern in a fully functional WSN where each node generates and reports the time at which the new software update completes and starts executing.
+The raw data generated from simulation logs were processed using an semi-automated scheme that processed the raw data using a bash script.
+This semi-processed data were further processed with a programme written in cpp to make them suitable for simple mathematical calculations.
+Then these data were related and  analysed using a spreadsheet programme to produce the IWS.
 
 
-%\subsection{\dme{Identification Requirement}{What does this mean?}}
-%\subsection{Problem Statement}
-%Protection against unauthorised access is achieved by authentication.
-%From security points of view authenticity is more important than encryption.
-%However, encryption is the typical way of achieving 
-
-\subsection{Methodology}
-\label{subsec:meth}
-
-We assume to possess the ability to observe the software update pattern in a fully functional WSN where each node generates and reports the time at which the new software update completes and starts executing.
-All motes in a WSN has a shared sense of time synchronisation which is accurate to 1~$\mu$s  and typically is achieved using TSMP protocol \cite{Pister08tsmp:time}.
-%In your system you are expecting that there's time sync. That's entirely reasonable, but it needs to be stated as an assumption about the WSN under study.
+\subsection*{Simulation Environment}
+\label{subsec:sim_env}
+The IDS requires deluge protocol to be able to report the time of executing  a new version of its software.
+The related techniques and design issues have been elaborately described in Section-!\ref{sec:design}.
+Deluge protocol was originally implemented in TinyOS.
+The protocol has been ported to other embedded operating systems including Contiki.
 We used deluge protocol implemented in `Contiki: The Open Source OS for the Internet of Things' for our experiments. 
 %[So this will eventually need citation and a self-contained description.]
-We used `Cooja Network Simulator' distributed with Contiki v2.7 to simulate the software update pattern using Deluge protocol. Different topologies were tested for thoroughness. 
-All tests were conducted in an environment with Contiki installed on Ubuntu 12.04.
+We installed Contiki v2.7 on a system running on Ubuntu 12.04.
+`Cooja', a network simulator for Contiki, was used to simulate the software update pattern associated with Deluge protocol. 
+We also used a plugin for Contiki called Mobility to aid our experiential setup.
+Although the plugin was designed to deal with positions over time for the nodes in the simulation, we used it to load the exact location of the sensor motes into the `Cooja' simulator.. 
 
-All the motes in the WSN were booted at same time running one version of a diagnostic application. 
-The application would necessarily report its time, version number and mote ID on the serial terminal every second. 
-The output from the serial terminal are logged and analysed later.
-The application in the base station dynamically begins the update process using deluge protocol after it boots and propagates another version of the software. 
-The new version of the software is transmitted to all motes in a fashion as determined by the protocol. 
 
-Whenever transfer of the new image is complete for a mote, it replaces its old version of the application and starts executing the new one. The new application would also necessarily print out its time, version number and mote ID on the serial terminal every second. 
-First time we have a mote declaring its version number of the new image is the update time for that mote. We continue running the simulator until all the motes in the WSN are updated to the new version image. All the logs are preserved and the necessary information (first reported update time for each mote) is filtered out from the log. Here necessary information means, the first time each mote reports that it is running new version of the image. The time and mote IDs are filtered out. We sort them based on the time of update. At this instance, we have the information like this:
+\subsection*{Design of Experiments}
+\label{subsec:exp_des}
+
+The simulations were carried out as information gathering exercises.
+They were carefully designed and planned with a view to evaluating the proposed IDS in different settings.
+Experiments on various topologies described in the following subsection were carried out for completeness of the exercise.
+
+Evaluating the IDS on each of the topologies consisted of several test runs.
+The test runs were of two kind: 
+\begin{inparaenum}
+\item Test runs aimed as establishing baseline data consisted of 20 individual simulations which were initiated from the sink; and
+\item Simulations that replicated an intrusion at different points of the WSN were initiated once from each of the nodes except the sink.
+\end{inparaenum}
+Results obtained from all these simulations were utilised to model the expected pattern for a particular topology.
+
+\subsection*{Topologies}
+\label{subsec:topos}
+
+The effects of the proposed IDS were tested in different topologies, which ranges from being very simple to complex ones, were tested for thoroughness. 
+The topologies were designed basing on different design considerations that were established using number of trial and error test runs.
+We used several python scripts to place the motes according to specific requirements like shape, distance, range and power level. 
+
+\begin{table*}[t!]
+\centering
+\begin{tabular}{|l|*{8}{r|}r}
+\hline
+\bd{Topologies}           & \bd{Linear} & \bd{Circular} & \bd{Elliptical} & \bd{Double Rings} & \bd{Wide Line} & \bd{Grid} & \bd{Tree} & \bd{Owheo WSN}   \\
+\hline
+\bd{Number}           & 20 & 20 & 20 & 46 & 45 & 72 & 25 & 37   \\
+ \bd{of Motes}           &  &  &  &  &  &  &  &    \\
+\hline
+\end{tabular}
+\caption{Number of motes used in each topological deployment}
+\label{tab:topos}
+\end{table*}
+
+The shape of the experiential topologies were designed as linear, circular, elliptical, double rings, wide line, grid, tree and other random topologies.
+The names of the topologies here indicate that in each case the motes were deployed along the circumference of the geometrical shape that enabled packet propagation to take place according to a designed fashion.
+In each topology, minimum 20 nodes were deployed for a test to take place. 
+More motes were necessary to replicate certain topologies.
+Table-~\ref{tab:topos} shows the number of motes that were used in experiments in corresponding topological  deployments.
+The motes were carefully placed at a distance of 30---35 meter along the circumference of the intended topological shape. 
+This distance was found necessary to allow  multiple transmission paths to all the motes along the desired directions . 
+This was further augmented with other constraints based on topological specification.
+For most experiments, the radio transmission power level was set at 100\% which has an approximate maximum effective transmission range of 50 meter and is able to interfere other motes upto 100 meter away.
+The Owheo WSN topology was additionally tested at 50\%  power level to identify the effects of power level on the IDS
+
+
+
+\subsection*{Procedure}
+\label{subsec:proc}
+
+Experiment procedure  was a combination of several well defined activities  that included running simulation, analysing system log and processing data to arrive at a conclusion. 
+
+
+\subsubsection*{Processing  of Individual Test Run}
+%Step 1: Running simulation
+The first step in the experiment was to run the simulation in the environmental set up described above according to the specific design requirement. 
+At the very beginning of the simulation, all the motes in the WSN were booted up at same time running one version of a diagnostic application. 
+The simulated motes performs network discovery process immediately on boot up and forms the autonomous WSN.
+The diagnostic application would necessarily report its time, version number and mote ID on the serial terminal every second at its serial port. 
+Cooja simulator allows to print this outputs from the serial ports of all motes in the `Mote output' window.
+
+
+%Step 2: Stopping the simulation
+The simulation allowed the diagnostic application in the base station to dynamically begin the update process using deluge protocol %immediately after the sink boots up and 
+and propagated another version of the operating system software, which is also called software image. 
+The new version of the image was transmitted to all motes in a fashion as determined by the deluge and other associated protocols. 
+Whenever transfer of the new image was complete for a mote, the new image would replace its old version of the application and would reboot to begin executing the new one.
+The new application would also necessarily allow the motes to print out their time, version number and mote ID on the serial terminal every second. 
+First time a mote declared its running version number to be of the new image was the update time for that mote.
+We continued running the simulator until all the motes in the WSN were updated to the new  version software image . 
+All information in the `Mote output' window, which were in reality outputs from all the mote serial terminals, were logged and preserved in a file.
+
+%Step 3: Filtering out mote update time and distance
+The necessary information was filtered out from the log file using a bash script. 
+The details of the bash script are out of the scope of this paper but can be made available on request.
+Here necessary information meant, the update time which was the first time each mote reported that it was running new version of the software image, its ID that were preserved in a file in following fashion:
 \begin{verbatim}
 ---------------------------------
 | 	Time (in ms)	|	Mote ID	|
 ---------------------------------
 \end{verbatim}
 
+%Step 4: Calculating the euclidean distance and sorting
+A cpp application was used to take input from this semi-processed information and another file that preserved the position information of the motes in the deployment.
+The application processed the data to find out the euclidean distance of the motes from the sink.
+It additionally sorted the rows based on update time in ascending order.
+At this instance, we preserved the processed information in a file in following fashion:
+\begin{verbatim}
+--------------------------------------------
+| 	Time (in ms)	|	Mote ID	| Distance |
+--------------------------------------------
+\end{verbatim}
+
+%Step 5: Calculating baseline data
 \subsubsection*{Building the Baseline Data}
-We have catered for multiple runs to build the baseline data that were compared against intrusion runs later.
-We have taken data from 20 runs initiated from the sink for each of the topologies tested.
-The output data from these runs were statistically treated to find out the `mean' time at which each of the nodes are updated with the new image.
-Besides the `mean', the `standard deviation' was also identified at each of the motes in the WSN.
+
+Processed data from multiple simulation runs initiated from the sink were considered to build the baseline data for each topology.
+Any change in the topology or variables in the environment setting would necessitate recalibrating the baseline.
+We considered 20 individual simulation runs initiated from the sink.
+The processed data from all these runs were statistically treated to find out the `mean' and `standard deviation' of update time recorded at each of the nodes.
 Both `mean' and `standard deviation' were used as input to the IDS to calculate the IWS according to the utility function shown in Equation-~\ref{eqn2}. 
 
+%Step 6: Calculating IWS
 \subsubsection*{Calculating IWS}
-Similar approach to building baseline data was followed to analyse data for the IWS.
-Update time of each of the motes during an update run were filtered from the log.
-The update time were processed along with the `mean' and `standard deviation' from baseline data according to the utility function in Equation-~\ref{eqn2}. 
-
+Simulations were carried out to replicate intrusion attack at different nodes.
+The individual simulations runs were treated in a fashion  similar to building baseline data.
+During an update replicating an intrusion, the update time recorded at each of the motes were processed  and mathematically treated according to the utility function in Equation-~\ref{eqn2}. The calculation performed the following computations:
 \begin{enumerate}
-\item Subtract the new update time from the corresponding `mean' of reference update time for each of the motes to calculate the absolute difference. For example, new update time of updated mote `$n$'(new) is subtracted from `mean' update time found from the baseline data for mote `$n$'.
-\item The absolute difference is divided by a function of `standard deviation' to avoid any `division by zero scenario'. This also smooths the data to avoid unrelated variations.
-\item Sum up the the resulting individual scores to find out the total IWS for the update.
+\item Subtract the new update time from the corresponding `mean' of reference update time for each of the motes to calculate the absolute difference. For example, new update time of updated mote `$n$'(new) is subtracted from `mean' update time found from the baseline data for mote `$n$' and its absolute value was calculated.
+\item The absolute difference is divided by a function of `standard deviation' to avoid any `division by zero' scenario. This also smooths the data to avoid unrelated variations.
+\item Sum up the resulting scores at all individual nodes in the WSN to find out the total IWS for the update.
 \end{enumerate}
 The resulting numbers indicated the nature of the update as has been described in Subsection-~\ref{subsec:sysdeg}.
-This gives us an approximation of abnormality of the new update pattern. The higher the score, the more dissimilar is the pattern. 
-However, the score does not contain topology awareness, as such a low score must be checked against topological orientation.
+This presented an approximation of abnormality of the new update pattern. The higher the score, the more dissimilar was the pattern. 
+
+However, the score itself does not preserve any topology awareness, as such a low score must be checked against topological orientation.
+This is required for additional contribution.
 % [HOW TO DO THIS IS YET TO BE DEVISED].
 
 
+\section{Overview of the System}
+\label{sec:des}
+The proposed IDS resides on a computing system that is physically connected to the sink.
+It utilises existing packet transmission protocols to collect related information. The information, which is predominantly identification of the mote $i$ and the time at which the new image updated the mote $t_i$, is then processed.
+The IDS analyses the timing of update of each of the sensors in the WSN and computes a `Surprise Score' or `Intrusion Warning Score' (IWS) using an algorithmic function to indicate a possible intrusion, i.e., a probable illegitimate update.
 
 \subsection{Threat Model}
 
@@ -609,6 +684,8 @@ Directed towards unauthorised program image to infect the entire WSN.
 
 \subsection{Assumptions}
 \label{sc:assump}
+%In your system you are expecting that there's time sync. That's entirely reasonable, but it needs to be stated as an assumption about the WSN under study.
+
 A single sink in the WSN.
 The sink is protected and cannot be compromised.
 All motes in the WSN are static.
@@ -635,7 +712,7 @@ NOT STATED / DISCUSSED IN THIS PAPER
 
 \subsection{System Design}
 \label{subsec:sysdeg}
-
+All motes in a WSN has a shared sense of time synchronisation which is accurate to 1~$\mu$s  and typically is achieved using TSMP protocol \cite{Pister08tsmp:time}.
 %The sink starts disseminating new image using Deluge protocol.
 %Whenever a mote receives full data object, it reboots to the new image and sends a confirmation timing info using AM to Sink.
 %Sink updates the NDB with timing info, moteID.
@@ -858,13 +935,14 @@ If the packet is still not available within specified time, the node is marked a
 \bd{Node ID}           & \bd{1} & \bd{2} & \bd{3} & \bd{4} & \bd{5} & \bd{6} & \bd{7} & \bd{8} & \bd{9} & \bd{10} & \bd{11} & \bd{12} & \bd{13} & \bd{14} & \bd{15} & \bd{16} & \bd{17} & \bd{18} & \bd{19} & \bd{20} \\
 %Mote ID           & 1 & 2 & 3 & 4 & 5  & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15  & 16 & 17 & 18 & 19 & 20 \\
 \hline
-$\mu$ 			  & 0 & 5 & 5 & 6 & 22 & 36& 37&43 &44 & 44 & 44 & 44 & 44 & 45 & 44  & 33 & 24 & 5 & 3 & 5 \\
-$\sigma$            & 0 &19 & 19& 69&139 &213&276&344&377&432 &432 &432 &377 &335 &273 & 207&137 & 68 & 17 & 19 \\
+
+$\mu$            & 0 &19 & 19& 69&139 &213&276&344&377&432 &432 &432 &377 &335 &273 & 207&137 & 68 & 17 & 19 \\
+$\sigma$		 & 0 & 5 & 5 & 6 & 22 & 36& 37&43 &44 & 44 & 44 & 44 & 44 & 45 & 44  & 33 & 24 & 5 & 3 & 5 \\
 $\mathit{IWS}$
-                  &0.5&35 &19 &128&262 &387&473&653&669&774&772 &1052&791 &645 &519  &454 &207 & 126& 19 & 19 \\
+                 &0.01&16 &19 &73&140 &203&246&336&344&396&395 &535&406 &332 &269  &237 &113 & 72& 16 & 16 \\
 \hline
 \end{tabular}
-\caption{Mean and Standard Deviations of the motes and IWS of intrusion initiated from different motes. Further explained in Figure-~\ref{fig:ellip}}
+\caption{Mean and Standard Deviation of motes and IWS from intrusion at motes. Further explained in Figure-~\ref{fig:ellip}}
 \label{tab:ellip}
 \end{table*}
 
@@ -888,22 +966,17 @@ $\mathit{IWS}$
     \caption{Relative position and comparison of IWS for intrusion at different motes from data in Table-~\ref{tab:ellip}}
 \end{figure*}
 
-The proposed IDS system and its technique were evaluated in comprehensive simulations.
-The simulation environment has been specified in Subsection-~\ref{subsec:meth}.
-The raw data were processed using an automation scheme that processed the raw data using a bash script.
-This semi-processed data were further processed using a programme written in cpp to make them suitable for simple mathematical calculations.
-Then these data were related and  analyses using a spreadsheet programme to produce the IWS.
 
-The effects of the proposed IDS were tested indifferent topologies, namely linear, circular, elliptical, double rings, wide lines/grid, tree and other topologies.
+CHECK CHECK The effects of the proposed IDS were tested indifferent topologies, namely linear, circular, elliptical, double rings, wide lines/grid, tree and other topologies.
 While discussing all of these topologies are useful, we shall concentrate our discussion on results and findings from one of the topologies.
 
 \subsection{Data1 + Discussion}
 
 We have selected data from elliptical topology for several reasons.
 The shape of the ellipse has been designed such that motes on either side of minor axis are within each others transmission range and motes on the either side of the major axis are not.
-Total 20 nodes were deployed with the minor axis approximately 30 mitre.
-The transmission power level is kept at 100\% which has a  transmission range of 50 mitre and is able to interfere other transmissions upto 100 mitre apart.
-The motes are placed at a space of 35 mitre along the circumference of the ellipse. 
+Total 20 nodes were deployed with the minor axis approximately 30 meter.
+The transmission power level is kept at 100\% which has a  transmission range of 50 meter and is able to interfere other transmissions upto 100 meter apart.
+The motes are placed at a space of 35 meter along the circumference of the ellipse. 
 The deployment enables multiple transmission paths to all the motes, achieves redundancy and contributes to reliable image transfer. 
 Extending the minor axis so that motes on either side remain out of transmission range, makes the topology equivalent to a circle, while contracting it is equivalent to a grid or even a linear topology.
 Overall the simulations ran well with expected results.
@@ -923,11 +996,11 @@ The figure additionally divides the region in GREEN, GREY and RED zones accordin
 The graph in  Figure-~\ref{subfig:ellipgraph} shows the relative measures of the IWS from the motes.
 
 According to the data presented in Table-~\ref{tab:ellip}, when we analyse baseline data, the motes which are further away from the sink are found to have higher `mean' and `standard deviation' in terms of update time.  
-However, `mean' does not vary to a great extent for relatively small distance difference when multiple paths are present.
+However, `standard deviation' does not vary to a great extent for relatively small distance difference when multiple paths are present.
 The availability of more redundant paths make the image transfer more efficient and reliable.
-Hence, even remaining at considerably different distances from the sink, mote ID 8, 9, 10, 11, 12, 13, 14 and 15 in the elliptical topology have quite similar mean update time.
-However, `standard deviation' increases dramatically as the motes are placed further from the sink.
-The measurement established from the baseline data shows that motes closer to the sink have lower `standard deviation' which increases sharply with the increase in distance.
+Hence, even remaining at considerably different distances from the sink, mote ID 8, 9, 10, 11, 12, 13, 14 and 15 in the elliptical topology have quite similar standard deviation of update time.
+However, `mean' increases dramatically as the motes are placed further from the sink.
+The measurement established from the baseline data shows that motes closer to the sink have lower `mean' which increases sharply with the increase in distance.
 
 On the other hand, the utility function calculated from the Equation-~\ref{eqn2} is designed to neutralise the changes in `mean' and `standard deviation' which are expected to contribute to a near $zero$ IWS that is further classified as GREEN zone for a legitimate software update. Table-~\ref{tab:ellip} and Figure-~\ref{fig:ellip} shows defined zones and IWS measured when intrusion was initiated at different motes.
 
@@ -938,7 +1011,7 @@ Because of the availability of the multiple paths, it is not possible to quantif
 However, an estimation of most probable link path based on the connectivity may be considered.
 
 IWS is considerable higher for intrusion at distant motes than ones which are close to the sink.
-This phenomena is topology which implies connectivity dependent.
+This phenomena is topology dependent, which also implies   that it is connectivity dependent.
 It is possible that if IWS in a network are organised in a specific order, which could be close to the Figure-~\ref{subfig:ellipgraph}, it would represent/resemble   the original topology in some fashion.
 This implication would be more evident once we discuss more topologies in the upcoming paragraphs.
 
