@@ -387,7 +387,7 @@ The assumptions made on the corresponding threats may be inconsistent with the p
 %Are you sure that a solution can be found within time available? How do you know?
 WSN have limitations in computing resources, memory and physical security. 
 Even after stringent security implementation, it cannot overcome security threats and possible security weakness. 
-Sensor nodes use wireless communication, which is particularly easy to eavesdrop on. Similarly, an attacker can easily inject malicious messages into the wireless network.\\
+Sensor nodes use wireless communication, which is particularly easy to eavesdrop on. Similarly, an attacker can easily inject malicious messages into the wireless network.
 
 
 \cite{ioannis2007towards} suggests a distributed approach in which nodes do not have a global view, monitor their neighbourhood and collaborate with their nearest neighbours for their normal operational condition, yet can detect an intrusion against blackhole and selective forwarding attacks.
@@ -530,7 +530,7 @@ Then these data were related and  analysed using a spreadsheet programme to prod
 \subsection*{Simulation Environment}
 \label{subsec:sim_env}
 The IDS requires deluge protocol to be able to report the time of executing  a new version of its software.
-The related techniques and design issues have been elaborately described in Section-!\ref{sec:design}.
+The related techniques and design issues have been elaborately described in Section-!\ref{sec:des}.
 Deluge protocol was originally implemented in TinyOS.
 The protocol has been ported to other embedded operating systems including Contiki.
 We used deluge protocol implemented in `Contiki: The Open Source OS for the Internet of Things' for our experiments. 
@@ -666,88 +666,94 @@ This is required for additional contribution.
 \section{Overview of the System}
 \label{sec:des}
 The proposed IDS resides on a computing system that is physically connected to the sink.
-It utilises existing packet transmission protocols to collect related information. The information, which is predominantly identification of the mote $i$ and the time at which the new image updated the mote $t_i$, is then processed.
-The IDS analyses the timing of update of each of the sensors in the WSN and computes a `Surprise Score' or `Intrusion Warning Score' (IWS) using an algorithmic function to indicate a possible intrusion, i.e., a probable illegitimate update.
+It relies on existing protocols for its operations.
+Related information is collected utilising standard transport layer protocols. 
+Here `related information' indicates identification number of any mote $i$ and the time at which the new image updated the mote $t_i$, is then processed.
+The IDS analyses the update time of  each of the sensors in the WSN and computes a `Surprise Score' or `Intrusion Warning Score' (IWS) using utility function in Equation-~\ref{eqn2} and indicates the cases of a possible intrusion, i.e., a probable illegitimate update.
 
 \subsection{Threat Model}
 
 %What are the security aspects it does not handle?
 %Why does not it handle them?
 
-Directed towards unauthorised program image to infect the entire WSN.
-\begin{itemize}
-\item Node failure
-\item Node compromise
-\item Malicious node update
-\item Popping up of intruder node
-\end{itemize}
+The threat model is directed towards injection of unauthorised program image to infect the entire WSN.
+The main threat scenario that the IDS is expected to be able to handle is compromise of a particular node in the WSN and then attacker being able to utilise the same node or replicate the node to inject a new software image using deluge protocol in the WSN.
+However, once the new image transfer has been injected, the node may remain alive or disappear.
+In case the compromised mote disappears, WSN would consider it as a node failure instead of node compromise.
+Actually, the node was hijacked to infect the WSN and create more confusion in determining how the incident took place.
+In addition to this, the IDS also considers a threat model where a new node pops up and injects the new software image by compromising existing WSN security mechanism.
+%\begin{itemize}
+%\item Node failure
+%\item Node compromise
+%\item Malicious node update
+%\item Popping up of intruder node
+%\end{itemize}
 
-\subsection{Assumptions}
+%Cases that it cannot handle. 
+The IDS cannot identify an intrusion in certain scenarios.
+For example, when an intrusion takes place in close vicinity of the sink, this IWS may not always be significantly large to be identified as an intrusion. On the other hand, due to node compromise in one of the motes and intrusion initiated from another mote may result into unsurprising score due to fact that the effects may cancel each others contribution to the score.
+The deployment should consider additional security measures to handle such scenarios.
+
+
+\subsection{Assumptions} %Should I put it here or in discussio section.
 \label{sc:assump}
-%In your system you are expecting that there's time sync. That's entirely reasonable, but it needs to be stated as an assumption about the WSN under study.
 
-A single sink in the WSN.
-The sink is protected and cannot be compromised.
-All motes in the WSN are static.
-We have knowledge about the topology [NOT UTILISED].
-The software update behaviour in the WSN is transparent to the IDS.
-The IDS resides externally outside the WSN (not in motes).
+%Assumptions that are discussed in-text are discussed in the context of the limitations of your study, which is typically in the discussion section. This is important, because both assumptions and limitations affect the inferences you can draw from your study. - See more at: http://phdstudent.com/Choosing-a-Research-Design/stating-the-obvious-writing-assumptions-limitations-and-delimitations
+The system is expected to achieve a time synchronisation. 
+That's entirely reasonable, but it needs to be stated as an assumption about the WSN under study.
+I AM NOT SURE IF THIS PART IS AN ASSUMPTION> THIS IS A FACT.
 
 
-\begin{itemize}
-	\item	The WSN is of homogeneous nature and works in the same network
-	\item	Each of the motes are  connected via wireless to at least another mote
-	\item	Whenever possible, there are more than one route to reach each of the motes
-	\item	The WSN is static in nature
-	\item	Whenever a new image is updated in a mote, it sends a conformation active message to all base stations in the WSN
-\end{itemize}
+The thesis assumes several settings and capabilities that are applicable to the WSN.
+One of the most important assumption is: there is only one sink in the network. While WSN with multiple sinks are also possible, the IDS needs to be designed differently and are excluded from the study. 
+It further assumes that the sink is protected from all kind of physical or logical attacks and cannot be compromised. 
+The system do not consider mote mobility scenario and assumes all motes in the WSN are static.
 
+The system operates in a fashion that whenever a new image is updated in a mote, it sends a conformation AM to all base stations in the WSN, thus the software update behaviour in the WSN is transparent to the IDS.
+The IDS is aware of the topological information that has been setup in the WSN.
+It knows the location of all nodes deployed in the network.
+%I AM NOT SURE IF IT SHOULD COME AS ASSUMPTION. THIS IS ALSO A DESIGN ISSUE.
+%However, assuming software update behaviour in the WSN transparent to the IDS enables fixing the scale for triggering warning.
 
+%\begin{itemize}
+%	\item	The WSN is of homogeneous nature and works in the same network.  - Too obvious
+%	\item 	All motes in the WSN runs same version of the software.  - Too obvious
+%	\item	IDS resides externally.  - A design issue, not an assumption
+%	\item	There is A single sink in the WSN. 
+%	\item	The sink is protected and cannot be compromised.
+%	\item	Whenever possible, there are more than one route to reach each of the motes
+%	\item	The WSN is static in nature- All motes in the WSN are static.
+%	\item	Whenever a new image is updated in a mote, it sends a conformation active message to all base stations in the WSN, thus The software update behaviour in the WSN is transparent to the IDS.
+%\end{itemize}
 
 \subsection{Algorithm}
 \label{subsec:alg}
-NOT STATED / DISCUSSED IN THIS PAPER
+NOT STATED / DISCUSSED IN THIS PAPER\\
+This is a part in the original thesis though.
 
 
 
 \subsection{System Design}
 \label{subsec:sysdeg}
-All motes in a WSN has a shared sense of time synchronisation which is accurate to 1~$\mu$s  and typically is achieved using TSMP protocol \cite{Pister08tsmp:time}.
+
+
 %The sink starts disseminating new image using Deluge protocol.
 %Whenever a mote receives full data object, it reboots to the new image and sends a confirmation timing info using AM to Sink.
 %Sink updates the NDB with timing info, moteID.
 %IDS builds baseline basing on authentic info.
 %IDS calculates surprise score using baseline and utility function.
 %IDS raises alarm using threshold score.
+
+
 The intrusion detection algorithm suggests some modification of the OTA update protocol by incorporating an Active Message (AM).
 An AM is a single-hop, unreliable packet used for network abstraction. 
-It has a destination address, a type  field, provides synchronus acknowledgements \cite{tep116}. 
+It has a destination address, a type  field, provides synchronous acknowledgements \cite{tep116}. 
 An AM can be used to carry necessary timing information to the sink once an object has been transferred completely to any mote and the mote reboots with the new image running.
+All motes in a WSN has a shared sense of time synchronisation which is accurate to 1~$\mu$s  and typically is achieved using TSMP protocol \cite{Pister08tsmp:time}.
+The timing information carried by the AM is therefore synchronised with other nodes in the WSN and can be used readily for processing by the IDS.
 
-\begin{figure}[btp]
-    \centering
-    \includegraphics[width=0.5\textwidth]{IDS}
-	%\includegraphics[scale=0.5, angle=180]{IDS}
-    \caption{\dme{IDS Modelling}{Looks good... but what does it mean? The picture needs to be self-explanatory, which in this case means text annotations or a key.}}
-    \label{fig:ids_model}
-\end{figure}
-
-The IDS model has been explained in Figure~\ref{fig:ids_model} and \ref{fig:ids_fw}.
-The figure has three kinds of components - 
-\begin{inparaenum}
-\item the motes in the WSN that are subject to legitimate or illegitimate update; 
-\item the sink which is utilisied to initiate a legitimate update. 
-The sink is protected from all kinds of security breaches whether it is physical or logical. 
-A IDS transport client (ITC) application runs on the sink that works in coordination with the IDS and assists in the intrusion detection; and
-\item there is an IDS application that runs on a system with higher computing resources. 
-The device is physically attached to the sink.
-It houses a network database (NDB).
-\end{inparaenum}
-%\begin{inparaenum}
-%\item ; 
-%\item ; and
-%\item .
-%\end{inparaenum}
+\subsubsection{IDS Framework}
+\label{ssc:ids_fw}
 
 \begin{figure}[btp]
     \centering
@@ -755,34 +761,64 @@ It houses a network database (NDB).
     \caption{IDS Framework}
     \label{fig:ids_fw}
 \end{figure}
+The IDS framework components has been shown in \ref{fig:ids_fw}.
+The IDS has three kinds of components --- 
+\begin{inparaenum}
+\item the motes in the WSN that are subject to legitimate or illegitimate update; 
+\item an IDS transport client (ITC) application that runs on the sink and works in coordination with the IDS to assists in intrusion detection; and
+%The sink is protected from all kinds of security breaches whether it is physical or logical. 
+\item an IDS application that runs on a system with higher computing resources which is physically attached to the sink, and houses a network database (NDB).
+\end{inparaenum}
+These components works in a unified fashion to make the IDS work.
 
-The motes in the network perform the action of endorsing update time. 
-It initiates an AM with the update time information to the sink. 
-An AM has several fields: destination address, type identifier that indicates the update time information and the protocol, timing information and a checksum value.
-[DO WE WANT TO INCLUDE THE PATH TAGGING; MAY BE LATER - IT INCREASES RELIABILITY, NOT DIRECTLY $IDS$ ACTIVITY?]
-[path tagging is good, but in all cases, what’s the risk from intruders messing with the reported data?]
-The packet is transported over the network.
+The chronology of the activities that take place in a WSN in a software  update and are associated with the IDS shown in \ref{fig:ids_fw}.
+\begin{inparaenum}
+\item Updates are initiated using deluge protocol;
+\item Deluge disseminates the new software image using the motes enroute to reach all the motes using a relay mechanism; 
+\item The nodes deliver their timing information to the sink using an AM packet;
+\item AM packets from the distant nodes rely on the other nodes enroute to reach the sink using a relay mechanism; and
+\item The ITC application in the sink delivers revelent information to the IDS for processing. 
+\end{inparaenum}
+The IDS analyses the acquired timing information to arrive at decision.
+\begin{figure}[btp]
+    \centering
+    \includegraphics[width=0.5\textwidth]{IDS}
+	%\includegraphics[scale=0.5, angle=180]{IDS}
+    \caption{IDS Modelling}
+    \label{fig:ids_model}
+\end{figure}
+
+\subsubsection{Determining IWS}
+\label{ssc:cal_iws}
+
+The intrusion detection activity begins with the action of motes in the network by endorsing update time. 
+Once updated with new software image, each node initiates an AM with the update time information to the sink. 
+An AM packet initiated for the IDS has several fields: destination address, type identifier that indicates the update time information and the protocol for IDS, timing information and a checksum value.
+%[DO WE WANT TO INCLUDE THE PATH TAGGING; MAY BE LATER - IT INCREASES RELIABILITY, NOT DIRECTLY $IDS$ ACTIVITY?]
+%[path tagging is good, but in all cases, what’s the risk from intruders messing with the reported data?]
+%[PATH TAGGING CAN BE USED AS HEART-BEAT MESSAGE]
+The packet travels through the network using existing transport layer protocols.
 When it arrives at the sink, the checksum value is examined by the ITC to ensure that the packet content has not been altered enroute.
 The ITC then inserts the update time, mote ID and related information to the NDB in the IDS.
 The IDS maintains an identifier to differentiate among different update times from different runs for the same mote.
 
-The first software update update run in the WSN is considered to be legitimate and the IDS takes this timing information as baseline.
+The first software update run in the WSN is considered to be legitimate and the IDS takes this timing information as baseline.
 It is possible and desirable that the IDS is trained with several other update runs.
+More training improved the ability of the IDS to detect intrusion more accurately.
+Utilising multiple runs are useful and beneficial as it increases accuracy and dependency.
 However, the IDS needs to be manually controlled to enable multiple training runs.
 Outcome from these runs are statistically treated to build the baseline.
-Utilising multiple runs are useful and beneficial as it increases accuracy and dependency.
+
 
 Once the IDS baseline has been built, all subsequent updates are liable to scrutiny by the IDS.
 The timing analyser module in the IDS inspects the NDB once an update activity has been detected.
-It determines the changes in the statistics of the update time and calculates IWS based on utility function, as
-%\begin{equation}
-%\label{eqn1} 
-%	f_1 = \sum\limits_{i=0}^{n} \left( \mu_i - t_i \right)
-%\end{equation}
+It determines the changes in the statistics of the update time and calculates IWS based on following utility function:
+
 \begin{equation}
 \label{eqn2} 
-	IWS = \sum \limits_{i=0}^{n} \frac{\left| \mu_i - t_i \right|}{\sigma_i + 1}
-\end{equation}
+	\mathit{IWS} = \sum \limits_{i=0}^{n} \frac{\left| \mu_i - t_i \right|}{\sigma_i + 1}
+%	f_1 = \sum\limits_{i=0}^{n} \left( \mu_i - t_i \right)
+	\end{equation}
 where, 
 
 	\hspace {.2cm} $i$ --- Identification of the Mote  
@@ -793,15 +829,25 @@ where,
 	
 	\hspace {.2cm} $\sigma_i$ --- Standard Deviation of Update Time at Mote \emph{i} 
 	
-The IDS considers an increase of IWS upto 10\% from the baseline value to be safe and marks as `GREEN' zone, an increase above 30\% to be possible intrusion and is marked as `RED' zone.
-However, an increase in 10\% --- 30\% can neither be considered safe, nor an intrusion, hence is marked as `GREY' that indicates a situation where rules are not known.
-However, the thresholds are not conclusive and may require some variation based on the density around the sink and scale of deployment.
+
+\subsubsection{Building Intrusion Warning Zones}
+\label{ssc:iw_zone}
+
+Threshold for building of Intrusion Warning Zone (IWZ) depends on the assumed ability of the IDS having IWS knowledge of all possible intrusions in the network.
+Such knowledge can be built by replicating intrusion activity from all nodes in the network once.
+However, in case where it is not possible, replicating intrusion activity from the furthest few nodes may serve the purpose.
+IDS can build a scale of possible expected range of IWS for the deployed topology and can classify the IWS in different zones to imply certain warning level.
+
+The IDS considers an IWS upto 10\% from the scale to be safe and marks as `GREEN' zone, an IWS above 30\% to be possible intrusion and is marked as `RED' zone.
+However, an IWS within the range of 10\% --- 30\% can neither be considered safe, nor an intrusion, hence is marked as `GREY' that indicates a situation where rules are not known.
+However, the thresholds are not conclusive and may require some variation based on the density, power level used in the WSN and scale of deployment.
 
 \subsubsection{Database Structure}
 \label{ssc:db}
-NDB stores the statistics of the update time of all the motes in the WSN for each update applied.
-NDB consists of three flat tables that work as storage and also have been designed to improve performance. 
-Records in the In-Network Activity Table (INT) contain following fields:
+The NDB stores the statistics of the update time of all the motes in the WSN for each update applied.
+It consists of three flat tables that performs as storage.
+The tables have been  designed to improve the IDS performance. 
+First, In-Network Activity Table (INT) consists of the  following fields:
 \begin{verbatim}
 mote_id, timestamp, id_seq, 
 upd_seq, upd_type, zone_type
@@ -811,13 +857,13 @@ The unique key for INT is $mote\_id$, $upd\_seq$ pair.
 $upd\_type$ indicates if the record belonged to a baseline update.
 For a baseline update type, the $zone_type$ is $zero$, while for others it is updated to indicate if the update related to that particular mote from that particular run was processed as GREEN, GREY or RED.
 
-The Baseline Table (BLT) holds the processed information from the legitimate runs and has the following fields:
+Secondly, the Baseline Table (BLT) holds the processed information from the legitimate runs and has the following fields:
 \begin{verbatim}
 mote_id, mu, sigma
 \end{verbatim}
 where, $mote\_id$ is the source node ID, $mu$ is the mean time and $sigma$ is the standard deviation for each $mote\_id$ from all legitimate runs.
 
-The Intrusion Activity Table (IAT) filters out necessary information from INT about most recent software update and contributes to the performance of the IDS.
+Finally, the Intrusion Activity Table (IAT) filters out necessary information from INT about most recent software update and contributes to the performance of the IDS.
 The table has two fields:
 \begin{verbatim}
 mote_id, timestamp
@@ -876,8 +922,6 @@ In such case, the IDS employs a packet recovery mechanism to obtain necessary in
 The packet recovery mechanism is initiated when a valid packet is not available form one or more motes within  the  determined maximum time from the updates  during the training phase.
 Upon receiving signal from the IDS, the ITC initiates AM to the specific requesting a retransmission of the update time and waits further  triple time for the required AM packet. If the packet is available,  IWS is recomputed and decision is updated accordingly.
 If the packet is still not available within specified time, the node is marked as compromised or failed and a notification is generated.
-
-
 
 
 
