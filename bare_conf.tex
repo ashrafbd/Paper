@@ -16,6 +16,10 @@
 
 \newcommand{\dme}[2]{\pdfmarkupcomment[markup=Highlight,color=yellow]{#1}{#2}}
 \newcommand{\todo}[1]{\pdfmarkupcomment[markup=Highlight,color=red]{#1}{todo}}
+
+\newcommand{\red}[1]{\pdfmarkupcomment[markup=Highlight,color=red]{#1}}
+\newcommand{\green}[1]{\pdfmarkupcomment[markup=Highlight,color=green]{#1}}
+\newcommand{\grey}[1]{\pdfmarkupcomment[markup=Highlight,color=gray]{#1}}
 \newcommand*{\bd}[1]{\multicolumn{1}{|c}{\bfseries #1}}
 
 % correct bad hyphenation here
@@ -398,7 +402,7 @@ Sensor nodes use wireless communication, which is particularly easy to eavesdrop
 
 
 
-\section{Deluge} % \& Intrusion}
+\section{Deluge} % \& Intrusion
 \label{sec:del}
 
 %What are the update technologies available?
@@ -581,7 +585,7 @@ The shape of the experiential topologies were designed as linear, circular, elli
 The names of the topologies here indicate that in each case the motes were deployed along the circumference of the geometrical shape that enabled packet propagation to take place according to a designed fashion.
 In each topology, minimum 20 nodes were deployed for a test to take place. 
 More motes were necessary to replicate certain topologies.
-Table-~\ref{tab:topos} shows the number of motes that were used in experiments in corresponding topological  deployments.
+Table-\ref{tab:topos} shows the number of motes that were used in experiments in corresponding topological  deployments.
 The motes were carefully placed at a distance of 30---35 meter along the circumference of the intended topological shape. 
 This distance was found necessary to allow  multiple transmission paths to all the motes along the desired directions . 
 This was further augmented with other constraints based on topological specification.
@@ -597,6 +601,7 @@ Experiment procedure  was a combination of several well defined activities  that
 
 
 \subsubsection*{Processing  of Individual Test Run}
+\label{ssc:test_runs}
 %Step 1: Running simulation
 The first step in the experiment was to run the simulation in the environmental set up described above according to the specific design requirement. 
 At the very beginning of the simulation, all the motes in the WSN were booted up at same time running one version of a diagnostic application. 
@@ -638,24 +643,27 @@ At this instance, we preserved the processed information in a file in following 
 
 %Step 5: Calculating baseline data
 \subsubsection*{Building the Baseline Data}
+\label{ssc:build_baseline}
 
 Processed data from multiple simulation runs initiated from the sink were considered to build the baseline data for each topology.
 Any change in the topology or variables in the environment setting would necessitate recalibrating the baseline.
 We considered 20 individual simulation runs initiated from the sink.
 The processed data from all these runs were statistically treated to find out the `mean' and `standard deviation' of update time recorded at each of the nodes.
-Both `mean' and `standard deviation' were used as input to the IDS to calculate the IWS according to the utility function shown in Equation-~\ref{eqn2}. 
+Both `mean' and `standard deviation' were used as input to the IDS to calculate the IWS according to the utility function shown in Equation-\ref{eqn2}. 
 
 %Step 6: Calculating IWS
 \subsubsection*{Calculating IWS}
+\label{ssc:calc_iws}
+
 Simulations were carried out to replicate intrusion attack at different nodes.
 The individual simulations runs were treated in a fashion  similar to building baseline data.
-During an update replicating an intrusion, the update time recorded at each of the motes were processed  and mathematically treated according to the utility function in Equation-~\ref{eqn2}. The calculation performed the following computations:
+During an update replicating an intrusion, the update time recorded at each of the motes were processed  and mathematically treated according to the utility function in Equation-\ref{eqn2}. The calculation performed the following computations:
 \begin{enumerate}
 \item Subtract the new update time from the corresponding `mean' of reference update time for each of the motes to calculate the absolute difference. For example, new update time of updated mote `$n$'(new) is subtracted from `mean' update time found from the baseline data for mote `$n$' and its absolute value was calculated.
 \item The absolute difference is divided by a function of `standard deviation' to avoid any `division by zero' scenario. This also smooths the data to avoid unrelated variations.
 \item Sum up the resulting scores at all individual nodes in the WSN to find out the total IWS for the update.
 \end{enumerate}
-The resulting numbers indicated the nature of the update as has been described in Subsection-~\ref{subsec:sysdeg}.
+The resulting numbers indicated the nature of the update as has been described in Subsection-\ref{subsec:sysdeg}.
 This presented an approximation of abnormality of the new update pattern. The higher the score, the more dissimilar was the pattern. 
 
 However, the score itself does not preserve any topology awareness, as such a low score must be checked against topological orientation.
@@ -669,7 +677,7 @@ The proposed IDS resides on a computing system that is physically connected to t
 It relies on existing protocols for its operations.
 Related information is collected utilising standard transport layer protocols. 
 Here `related information' indicates identification number of any mote $i$ and the time at which the new image updated the mote $t_i$, is then processed.
-The IDS analyses the update time of  each of the sensors in the WSN and computes a `Surprise Score' or `Intrusion Warning Score' (IWS) using utility function in Equation-~\ref{eqn2} and indicates the cases of a possible intrusion, i.e., a probable illegitimate update.
+The IDS analyses the update time of  each of the sensors in the WSN and computes a `Surprise Score' or `Intrusion Warning Score' (IWS) using utility function in Equation-\ref{eqn2} and indicates the cases of a possible intrusion, i.e., a probable illegitimate update.
 
 \subsection{Threat Model}
 
@@ -983,10 +991,12 @@ If the packet is still not available within specified time, the node is marked a
 $\mu$            & 0 &19 & 19& 69&139 &213&276&344&377&432 &432 &432 &377 &335 &273 & 207&137 & 68 & 17 & 19 \\
 $\sigma$		 & 0 & 5 & 5 & 6 & 22 & 36& 37&43 &44 & 44 & 44 & 44 & 44 & 45 & 44  & 33 & 24 & 5 & 3 & 5 \\
 $\mathit{IWS}$
-                 &0.01&16 &19 &73&140 &203&246&336&344&396&395 &535&406 &332 &269  &237 &113 & 72& 16 & 16 \\
+                 &0.01&16 &19 &73 & 140 &203 &246 &336 &344 &396 &395 &535 &406 &332 &269 &237 &113 & 72& 16 & 16 \\
+
+%                 &\green{0.01& 16 & 19} &\grey{73 & 140} &\red{203 & 246 & 336 & 344 & 396 & 395 & 535 & 406 & 332 & 269 & 237} &\grey{113 & 72}& \green{16 & 16} \\
 \hline
 \end{tabular}
-\caption{Mean and Standard Deviation of motes and IWS from intrusion at motes. Further explained in Figure-~\ref{fig:ellip}}
+\caption{Mean and Standard Deviation of motes and IWS from intrusion at motes. Further explained in Figure-\ref{fig:ellip}}
 \label{tab:ellip}
 \end{table*}
 
@@ -1007,109 +1017,236 @@ $\mathit{IWS}$
         \label{subfig:ellipgraph}
         \caption{Comparison of IWS at different motes}
     \end{subfigure}
-    \caption{Relative position and comparison of IWS for intrusion at different motes from data in Table-~\ref{tab:ellip}}
+    \caption{Relative position and comparison of IWS for intrusion at different motes from data in Table-\ref{tab:ellip}}
 \end{figure*}
 
 
-CHECK CHECK The effects of the proposed IDS were tested indifferent topologies, namely linear, circular, elliptical, double rings, wide lines/grid, tree and other topologies.
-While discussing all of these topologies are useful, we shall concentrate our discussion on results and findings from one of the topologies.
+The performance and effects of the proposed IDS were tested in different topologies, such as linear, circular, elliptical, double rings, wide lines/grid, tree, and other topologies.
+While discussing all of these topologies are useful, we shall concentrate our discussion on results and findings elliptical topology only.
+Diiscussing any of the topologies presents fair idea about the outcomes from the others. 
+We shall mention the cases when the outcome was considered to be exception and contrary to the expectations.
+The space requirement also motivates us to limit the discussion to necessary details only.
 
-\subsection{Data1 + Discussion}
+
+%\subsection{Data1 + Discussion}
 
 We have selected data from elliptical topology for several reasons.
-The shape of the ellipse has been designed such that motes on either side of minor axis are within each others transmission range and motes on the either side of the major axis are not.
-Total 20 nodes were deployed with the minor axis approximately 30 meter.
-The transmission power level is kept at 100\% which has a  transmission range of 50 meter and is able to interfere other transmissions upto 100 meter apart.
-The motes are placed at a space of 35 meter along the circumference of the ellipse. 
-The deployment enables multiple transmission paths to all the motes, achieves redundancy and contributes to reliable image transfer. 
-Extending the minor axis so that motes on either side remain out of transmission range, makes the topology equivalent to a circle, while contracting it is equivalent to a grid or even a linear topology.
-Overall the simulations ran well with expected results.
-
-We assigned mote ID 1 as the sink and ran 20 updates initiated from the sink.
-The output data from these runs were processed and statistically treated to find out the `mean' and `standard deviation' of the  time at which each of the nodes are updated with the new image.
+Ellipse has a shape which is almost midway among the range of topologies between a circular and a linear one.
+Extending the minor axis of the ellipse makes the topology equivalent to a circle, while contracting it is equivalent to a grid or even a linear topology.
+Thickening the perimeter of the circle turns it into a double ring.
+Again, the linear topology can be considered as a tree with one or two branches.
+Extending it with more branches presents a fairly complex tree structure.
+Because of these similarities, discussing elliptical topology is an interesting choice.
 
 
-Table-~\ref{tab:ellip} shows the statistical measurements obtained at different motes and the IWS measured when each of the motes were considered as intrusion point.
+The shape of the ellipse has been designed considering several requirements.
+The ellipse shape deployment has been shown in Figure-\ref{subfig:elliptopo}.
+The motes on either side of minor axis remained within each others transmission range, whereas motes on the either side of the major axis did not.
+Total 20 nodes were deployed with the minor axis being 30 meter and the major axis being way larger than that.
+The transmission power level was set at 100\% which allowed a  transmission range of 50 meter and nodes were  able to interfere other nodes at  upto 100 meter apart.
+The motes were placed at a space of 35 meter along the circumference of the ellipse. 
+The deployment enabled multiple transmission paths to all the motes.
+It contributed to achieve  redundancy and  reliable image transfer. 
+
+The simulations proceeded without interruption and produced expected results.
+To build the baseline data, we assigned mote ID 1 as the sink and ran 20 updates initiated from the sink.
+The output from these runs were processed as describes in Section-\ref{ssc:build_baseline} and were statistically treated to compute the `mean' and `standard deviation' of the  time at which each of the nodes were updated with the new image.
+The computation results have been presented in Table-\ref{tab:ellip}.
+
+Once the baseline data were built, intrusion scenarios were replicated at other nodes according to the experiment protocols.
+Output of these replications were processed to compute IWS.
+Results obtained from these simulated intrusions are also reported in Table-\ref{tab:ellip}.
+
+IWS shown in the last row of Table-\ref{tab:ellip} were used to build a scale that ranged from $0$ to maximum of $\mathit{IWS}$.
+Building this scale was crucial for the ability to classify the IWS to meaningful zones.
+However, it is not possible to build the scale without the knowledge of the expected IWS from the furthest nodes in the network.
+Nevertheless, we established two threshold levels at 10\% and at 30\% that were useful in zone classification using intuitive heuristics.
+Details of the zoning has been discussed in Section-\ref{ssc:iw_zone}.
+
+
+Table-\ref{tab:ellip} shows the statistical measurements obtained at different motes and the IWS measured when each of the motes were considered as intrusion point.
 It can be clearly seen that IWS at the intrusion points differ considerably.
-The first row in Table-~\ref{tab:ellip} contain the Node IDs that are headers for the data displayed underneath.
-The next two rows describe the `mean' and `standard deviation' that were established from the 20 legitimate updates initiated from the sink.
-Each cell in the last row contains the IWS calculated using function shown in Equation-~\ref{eqn2} test runs initiated from the node indicated at top of the column.
-The data shown in the table can best be interpreted with Figure-~\ref{fig:ellip}. 
-Figure-~\ref{subfig:elliptopo} shows the actual relative deployment of the motes with mote ID written at the center of the tiny circle and IWS measured when an intrusion attempt has been initiated from the mote. 
+The first row in Table-\ref{tab:ellip} contain the Node IDs that are headers for the data displayed underneath.
+The next two rows describe the `mean' and `standard deviation' that were computed from the 20 legitimate updates initiated from the sink.
+Cells in the last row contain the IWS calculated using  the utility function shown in Equation-\ref{eqn2} for the test runs initiated from the node indicated at top of the column.
+The data shown in the table can best be interpreted when related to Figure-\ref{fig:ellip}. 
+Figure-\ref{subfig:elliptopo} shows the actual relative positions of the motes with mote ID written at the center of the tiny circle and IWS measured when an intrusion attempt has been initiated from the mote. 
 The figure additionally divides the region in GREEN, GREY and RED zones according to the logic discussed in \ref{ssc:actids}.
-The graph in  Figure-~\ref{subfig:ellipgraph} shows the relative measures of the IWS from the motes.
+The graph in  Figure-\ref{subfig:ellipgraph} shows the relative measures of the IWS from the motes.
 
-According to the data presented in Table-~\ref{tab:ellip}, when we analyse baseline data, the motes which are further away from the sink are found to have higher `mean' and `standard deviation' in terms of update time.  
-However, `standard deviation' does not vary to a great extent for relatively small distance difference when multiple paths are present.
-The availability of more redundant paths make the image transfer more efficient and reliable.
-Hence, even remaining at considerably different distances from the sink, mote ID 8, 9, 10, 11, 12, 13, 14 and 15 in the elliptical topology have quite similar standard deviation of update time.
-However, `mean' increases dramatically as the motes are placed further from the sink.
-The measurement established from the baseline data shows that motes closer to the sink have lower `mean' which increases sharply with the increase in distance.
+From the data presented in Table-\ref{tab:ellip}, analysing the baseline data we find that the motes further away from the sink are found to have higher `mean' and `standard deviation' in terms of update time.  
+However, `standard deviation' raises gradually, though it does not vary to a great extent for relatively small distance difference when multiple paths are present.
+This results from the  availability of more redundant paths make the image transfer more efficient and reliable which contribute to the stability of `standard deviation'.
+Therefore, even remaining at considerably different distances from the sink, mote ID 8, 9, 10, 11, 12, 13, 14 and 15  have quite similar `standard deviation' of update time.
+In contrast to this, `mean' increases sharply as the motes are placed further from the sink.
+The quantities established from the baseline data shows that motes closer to the sink have lower `mean' which increases sharply with the increase in distance.
 
-On the other hand, the utility function calculated from the Equation-~\ref{eqn2} is designed to neutralise the changes in `mean' and `standard deviation' which are expected to contribute to a near $zero$ IWS that is further classified as GREEN zone for a legitimate software update. Table-~\ref{tab:ellip} and Figure-~\ref{fig:ellip} shows defined zones and IWS measured when intrusion was initiated at different motes.
+
+The utility function presented in Equation-\ref{eqn2} is designed to neutralise the undesired %/unexpected
+changes in `mean' and `standard deviation' which are expected to contribute to a near $zero$ IWS.
+A near $zero$ IWS is further classified as GREEN zone to indicate a legitimate software update. 
+Table-\ref{tab:ellip} and Figure-\ref{fig:ellip} shows defined zones and IWS measured when intrusion was initiated at different motes.
 
 The IWS increases linearly with the increase in distance from the sink.
 The `distance' term can be misleading in the context of our discussion and demands further clarification.
 Euclidean distance between a mote and the sink does not make useful sense as the packets in the network must travel using a relay mechanism through other motes in the network.
 Because of the availability of the multiple paths, it is not possible to quantify the exact distance that a packet would travel while transporting form a mote to the sink.
-However, an estimation of most probable link path based on the connectivity may be considered.
+However, an estimation of distance along the most probable link path based on the connectivity may be considered.
 
-IWS is considerable higher for intrusion at distant motes than ones which are close to the sink.
+IWS is considerably higher for intrusion at distant motes than ones which are close to the sink.
 This phenomena is topology dependent, which also implies   that it is connectivity dependent.
-It is possible that if IWS in a network are organised in a specific order, which could be close to the Figure-~\ref{subfig:ellipgraph}, it would represent/resemble   the original topology in some fashion.
-This implication would be more evident once we discuss more topologies in the upcoming paragraphs.
+It is possible that if IWS in a network are organised in a specific order, it would represent/resemble   the original topology in some fashion.
+For example, in the elliptical topology, the link path between node 1 and node 11 through node 5 is represented by a curve with a positive slope or rise.
+On the other hand, the link path through node 15 is represented by a fall or a negative sloped curve.
+There is a relationship between the curvature/eccentricity of the original topology and the represented curve or  trend.
+%This implication would be more evident once we discuss more topologies in the upcoming paragraphs. {Only if we discuss the other topologies}.
+However, establishing the relationship is beyond the scope of this paper.
+
+%\subsection{discussion of contributions}
+
+
+\begin{table*}[t!]
+\centering
+\begin{tabular}{|l|*{20}{r|}r}
+\hline
+\bd{Node ID}           & \bd{1} & \bd{2} & \bd{3} & \bd{4} & \bd{5} & \bd{6} & \bd{7} & \bd{8} & \bd{9} & \bd{10} & \bd{11} & \bd{...} & \bd{31} & \bd{32} & \bd{33} & \bd{34} & \bd{35} & \bd{36} & \bd{37} & \bd{38} \\
+%Mote ID           & 1 & 2 & 3 & 4 & 5  & 6 & 7 & 8 & 9 & 10 & 11 & ...& 31 & 32 & 33  & 34 & 35 & 36 & 37 & 38 \\
+\hline		\hline
+
+Power	  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &   &  &  &  &  &  \\
+$100\% $          & 512 & 529 & 512 & 512 & 512  & 512 & 476 & 478 & 476 & 459 & 458 & ...& 49 & 47 & 53  & 48 & 49 & 51 & 47 & 29 \\
+\hline
+
+Power	  &  &  &  &  &  &  &  &  &  &  &  &  &  &  &   &  &  &  &  &  \\
+$50\%$            &31 & 59&254& 31& 31 &283& 32& 32& 254& 31 &253 & ...& 31 & 31 & 31  & 30 & 31 & 31 & 30 & 0 \\
+\hline
+\end{tabular}
+\caption{IWS from intrusion at motes in `Owheo Sensor Network'. Further explained in Figure-\ref{fig:owheo}}
+\label{tab:owheo}
+\end{table*}
+
+
+\begin{figure*}[t!]
+\label{fig:owheo}
+    \centering
+    \begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \includegraphics[height=2.5in]{Owheo_full}
+        \label{subfig:owheo_full}
+        \caption{Zone boundary at Full Power Level}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[b]{0.5\textwidth}
+        \centering
+        \includegraphics[height=2.5in]{Owheo_half}
+        \label{subfig:owheo_half}
+        \caption{Zone boundary at Half Power Level}
+    \end{subfigure}
+    \caption{Comparison of Zone boundary for power level variations in `Owheo Sensor Network'. IWS of the motes at the power levels are shown in Table-\ref{tab:owheo}}
+\end{figure*}
+
+The main contribution of this research project comes from the fact that the IDS is able to report an anomaly from a software update in quantitative term like the IWS.
+The claim is evident from the data presented in Table-\ref{tab:ellip}.
+For example: in this case, a regular legitimate update would be initiated from node ID 1. 
+When such a scenario was simulated and the timing information was compared against the baseline, it resulted into a IWS of 0.01.
+The result matched the theoretical expectation, as a legitimate update initiated from the sink should produce a near $zero$ IWS.
+On the other hand, when intrusion scenario were simulated from the nodes near the sink, the IWS reported was fairly low, e.g. 16 for mote ID 2, 19, and 20
+ and 19 for node 3 
+ and likewise.
+Because of the fact that IWS of the motes close to the sink are likely to be very low, which is in line with the theoretical expectation, it is quite difficult to conclude if such a IWS indicate an intrusion. 
+However, for the distant motes, the IWS is quite high and the IDS can easily conclude as intrusion, e.g. IWS of 246 for mote ID 7, 269 for mote ID 15, 395 for mote ID 11, 535 for mote ID 12 and likewise indicate intrusion.
+
+
+While reporting severity or likelihood of an intrusion in quantitative term like the IWS is useful, it is more beneficial if the quantity is associated with some kind of interpretation.
+The technique of associating such interpretation has been discussed in Section-\ref{ssc:iw_zone} and in this Section. 
+In the elliptical topology intrusion scenario, maximum IWS reported in the presented data in Table-\ref{tab:ellip} was 535. 
+Motes reporting an IWS upto 53.5 would be considered in the GREEN zone.
+For example, in figure-\ref{subfig:elliptopo}, mote ID 2, 3, 19, and 20 are in this zone.
+On the other hand, IWS above 53.5 and bellow 160.5 are considered to be in the GREY zone. 
+Motes in this zone are 4, 5, 17, and 18.
+They can neither be considered free from intrusion, nor it is possible to easily arrive at a decision that the scores indicate intrusion for sure.
+In contrast to both the scenario describes above, IWS above 160.5 is considered to be an intrusion.
+All other motes in the topology have a IWS above this threshold level and hence are considered to be more susceptible to intrusion.
+
+The idea of zoning associated with the IWS is very beneficial in securing a WSN.
+It is immensely useful in designing a secure network deployment, which is considered to be another major contribution of the research work.
+The motes which are found to be in the GREEN zone must be adequately secured by design with additional physical security as intrusion in these motes are not observed by the IDS.
+On the other hand, motes in the GREY zone need additional monitoring which would aid determining if the IWS indicated a real intrusion or a false positive.
+The additional monitoring could be in the form of an algorithmic or physical observation or listening post or even employing additional protocol.
+The rest of the region, identified by the RED zone, is under the effective surveillance of the IDS and is considered to be secure.
+
+The concept of zoning using the IDS is a very useful tool in designing secure WSN deployment.
+A network is more secure when it has a smaller GREEN and GREY zone.
+A smaller GREEN zone implies the requirement of lesser resources to impenetrably secure less number of motes.
+Similarly, a smaller or non-existent GREY zone would lesser monitoring measures.
+Such a secure WSN can be designed by physically relocating some of the motes or even by varying the factors like power level.
+For example, we have simulated the IWS scenario of the `Owheo Sensor Network' at two different power levels in our quest to design a secure WSN using the IDS.
+`Owheo Sensor Network', which is the WSN deployed in the Department of Computer Science building at the University of Otago, is intended to be used for research purposes.
+
+
+
+
+Table-\ref{tab:owheo} shows the IWS at different motes as intrusion points at 100\% and 50\% power levels. 
+In `Owheo Sensor Network', mote ID 38 was marked as the sink and mote ID 26 does not exist.
+At 100\% power level, 19 nodes (mote ID 1, 4, 5, 7, 8, 10, 16, 17, 18, 28, 29, 30, 31, 32, 33, 34, 35, 36, and 37) were in GREEN zone, only one node (mote ID 2) was in GREY zone and the rest 16 nodes were in RED zone.
+The deployment and the zoning boundaries at 100\% power level has been shown in Figure-\ref{subfig:owheo_full}.
+When the same deployment was simulated at 50\% power level, only seven nodes (mote ID 30, 31, 32, 34, 35, 36, and 37) were in GREEN zone, two nodes (mote ID 29, and 33) were in GREY zone and rest 27 motes were in RED zone.
+The deployment and the zoning boundaries at 50\% power level has been shown in Figure-\ref{subfig:owheo_half}.
+Comparing the scenarios presented in  Figure \ref{subfig:owheo_full} and \ref{subfig:owheo_half}, it can clearly be established that Figure-\ref{subfig:owheo_half}, i.e. deployment at 50\% power level is more secure than the other because of two reasons:
+\begin{inparaenum}
+\item it has a smaller sized GREEN and GREY zone; and 
+\item there are lesser number of nodes in these zones. 
+\end{inparaenum}
+The deployment can be made more secure by physically relocating some of the motes from GREEN zone to RED zone, provided the relocation does not hamper the original intended purpose of the WSN.
+
+
 
 %Identifying node failure and node compromise
 The IWS is also able to detect node failures in the WSN.
-In case of a node not reporting its its update time is handled by a error recovery procedure put in place by the IDS.
-However, the recovery procedure fails in such cases resulting into contributing towards the increased IWS that is reported as an intrusion.
+This additional advantage comes as a by-product contribution.
+However, as this was not a design consideration, the contribution is robust enough, yet it is worth mentioning.
+The case of a node not reporting its update time within a specified delay is handled by a error recovery procedure put in place by the IDS.
+If the recovery procedure described in section-\ref{ssc:actsink} fails, there is a possibility that the node might have failed or have been compromised.
+However, such failure resulting into contributing towards an IWS which is quite different for the update pattern detected from the timing information reported by the other nodes.
 The IDS structure is such that it has an expected pattern and shape of IWS for an intrusion at some specific point.
 If the shape is distorted to a great extent, it indicates some unusualness which can be attributed to some other phenomena like node failure or compromise.
+The node failure or node compromise can take place concurrently with or without intrusion.
 It might also indicate a different type of attack associated with a physical intrusion.
 An interpretation form the IDS view of the topology would enable identification of some other types of attacks in WSN like node relocation, node repudiation, node compromise.
-The node failure or node compromise can take place concurrently with or without intrusion.
-%However, in case of a node failure, it cannot recover  and would contribute to the 
-
-
-\subsection{write here}
-
-Discuss other topologies
-
-
-Insight for secure deployment. which topologies would work better - idea
-
-Insight for a deployment that would ensure better connectivity
 
 
 
 
+%\subsection{Discuss other topologies}
 
+%Not included in this paper. Already long enough.
+%Insight for secure deployment. which topologies would work better - idea
+%Insight for a deployment that would ensure better connectivity
+%
+%
+%Interpretation of the results.
+%Our argument in support of the results.
+%
+%Explanation of the results to answer the question - so what.
+%Why the result was important.
+%Why does this matter .
 
-
-Interpretation of the results.
-Our argument in support of the results.
-
-Explanation of the results to answer the question - so what.
-Why the result was important.
-Why does this matter .
-
-Constraints and limitations of the program
-
-Opportunities for future work
+%Constraints and limitations of the program
+%Opportunities for future work
 
 % Must explicitly state what is my contribution
 % If there are some recommendations, must include them here
-What are my specific contributions to the academic society?
-Do I have some recommendations about it?
+%What are my specific contributions to the academic society?
+%Do I have some recommendations about it?
 
 
 \section{Conclusion}
-
-Building secure WSN is of paramount importance, yet it is quite difficult. Privacy issues have to be considered depending on application. A good overall solution must integrate many different technologies. Cryptography alone cannot ensure total security mainly due to limited resources in sensors; therefore, a multi-level approach to combine different technique in necessary, which might  include designing secure protocol, careful use of key management methods and mechanisms. We propose to investigate such a solution.
-
 \label{sec:conc}
-Wrap the whole thing up;
+Building secure WSN is of paramount importance, yet it is quite difficult.
 
+
+Wrap the whole thing up;
+\subsection{write here}
 %%%%OWN Notes
 
 %state-of-the-art methodologies in IoT security, implementation, applications, modeling for threats detections and countermeasures; 
