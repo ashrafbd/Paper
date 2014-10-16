@@ -15,6 +15,7 @@
 \usepackage{pdfcomment}
 
 \newcommand{\dme}[2]{\pdfmarkupcomment[markup=Highlight,color=yellow]{#1}{#2}}
+\newcommand{\notedme}[1]{\raisebox{0pt}[0pt][0pt]{\pdfcomment[open=true,color=blue]{#1}}}
 \newcommand{\todo}[1]{\pdfmarkupcomment[markup=Highlight,color=red]{#1}{todo}}
 
 \newcommand{\red}[1]{\pdfmarkupcomment[markup=Highlight,color=red]{#1}}
@@ -415,10 +416,11 @@ Zhu et. el.  proposes a guaranteed interleaved hop-by-hop authentication schemes
 %What are the update protocols available?
 
 \subsection{Popular OTA Protocols}
-Reprogramming of the sensors in a WSN is one of the most important management task.
-Performing the task manually may work out for a small no of sensors, but this is not a scalable idea.
+\notedme{Doesn't make sense to me that a general ``popular OTA'' would be the first section of more specific ``Deluge''}
+Reprogramming of the sensors in a WSN is one of the most important management tasks.
+Performing the task manually may work out for a small \todo{no} of sensors, but this is not a scalable idea.
 Hence automatic OTA reprogramming of sensors becomes an important issue.
-While some of the protocols designed for OTA reprogramming deals with a subset of motes, most others necessarily update the whole network at one go resulting into all motes in the WSN running same version of the software.
+While some of the protocols designed for OTA reprogramming deal with a subset of motes, most others necessarily update the whole network at one go resulting into all motes in the WSN running the same version of the software.
 The subset reprogramming allows the same WSN to preferentially perform different tasks, which is a convenience and again increases management overhead.
 % XNP  [4]	Program	CSMA	One	 \cite{xnp}
 % Incremental  [15]	Patch	CSMA	One	No	No  \cite{1381899}
@@ -428,15 +430,15 @@ The subset reprogramming allows the same WSN to preferentially perform different
 % Sprinkler  [22]	Program	TDMA	Multi	Yes	No \cite{4212092}
 % Firecracker  [18]	Program	CSMA	Multi	Yes	No \cite{Levis:2004:FP:1133572.1133589}
 In Trickle, which is a well-known OTA update protocol, the motes periodically advertise their own running code version to the neighbours. 
-When a neighbour listens to an older version, it disseminates the updated code. 
+When a neighbour listens to an older version, it disseminates the updated code.\notedme{unclear}
 Trickle addresses single packet dissemination and uses suppression and dynamic adjustment of the broadcast rate to limit transmissions among neighboring nodes.
-The Trickle algorithm controls the rate of transfer by suppressing a motes own broadcast  instead of flooding the network \cite{ISI:000221664800002}. % scalable multicast, and wireless broadcast literature
+The Trickle algorithm controls the rate of transfer by suppressing a mote's own broadcast  instead of flooding the network \cite{ISI:000221664800002}. % scalable multicast, and wireless broadcast literature
 Another OTA update protocol, Multihop Network Programming (MNP) is an enhancement over Trickle or Deluge in a way that is more efficient in image transfer using `pipelining' to enable faster data propagation and also in terms of energy.
 MNP handles the problems that occur from message collision and hidden terminal using a greedy approach of sender selection algorithm to guarantee that at a time, there is at most one programme transmitting source  in a neighbourhood. 
-MNP  \cite{Kulkarni:2005:MMN:1068511.1069352}.
-While the above mentioned reprogramming protocols  are either unsuitable or inefficient in a mobile environment, ReMo does not make any assumptions on the location of nodes and suggests an energy efficient, multihop reprogramming protocol for mobile WSNs.
+\todo{MNP}  \cite{Kulkarni:2005:MMN:1068511.1069352}.\notedme{This is not making the benefits of the different schemes sufficiently clear to stand on their own.}
+While the above mentioned reprogramming protocols  are either unsuitable or inefficient in a mobile environment, ReMo does not make any assumptions on the location of nodes and suggests an energy efficient, multihop reprogramming protocol for mobile WSNs.\notedme{sentence too long}
 ReMo is based on a periodic metadata broadcast paradigm whose probability is dynamically adjusted based on neighbour density and pages are transferred out of order based on availability which in turn depends on high potential of code availability, not link quality alone \cite{ISI:000271540300007}.
-Comparison of code update completion time of different protocols indicates that while Deluge performs moderately, MNP is the fastest among them.
+Comparison of code update completion time of different protocols indicates that while Deluge performs moderately, MNP is the fastest among them.\notedme{Did you do this comparison? If so, give some figures, if not provide a citation.}
 Typhoon also reliably delivers large objects to all nodes using a combination of spatially-tuned timers, prompt retransmissions, and frequency diversity  and has the benefits of reduced dissemination time and energy consumption by up to three times \cite{liang2008typhoon}.
 MOAP-SW allows a subset of the network to be programmed efficiently \cite{Maia20131277}.
 
@@ -444,14 +446,14 @@ MOAP-SW allows a subset of the network to be programmed efficiently \cite{Maia20
 \subsection{Deluge Protocol}
 %In this section,we describe Deluge protocol.
 Deluge is an efficient and reliable protocol for disseminating large data objects, such as program binaries that are larger than sensor memory \cite{1031506}. 
-Combining the mechanism with bootloader  allows programming the wireless nodes over the air.
-Deluge has been implemented in TinyOS and later ported on Contiki, bothare prominent WSN open source operating systems.
+Combining the mechanism with the bootloader  allows programming the wireless nodes over the air.
+Deluge has been implemented in TinyOS and later ported to \todo{Contiki, bothare} prominent WSN open source operating systems.
 %TinyOScomponent-based operating system and platform targeting wireless sensor networks (WSNs). TinyOS is an embedded operating system written in the nesC programming language as a set of cooperating tasks and processes.
 %Contiki is an open source operating system for the Internet of Things. Contiki %connects tiny low-cost, low-power microcontrollers to the Internet. 
-The original protocol was implemented at Barkley by Jonathan Hui. % Now in CISCO
+The original protocol was implemented at \todo{Barkley} by Jonathan Hui. % Now in CISCO
 The later version Deluge 2.x was implementation at Johns Hopkins notably by Razvan, who is also credited with secure design of the protocol and author of another OTA protocol Typhoon. %  (now at Google).
-Deluge, (which is) an improvement over Trickle,  divides the program image into pages that are further split into packets while in transition. 
-Instead of nodes autonomously advertising its own version like Trickle, the nodes periodically advertise the newest pages (only the ones changed from prior version) available to send. 
+Deluge, (which is) an improvement over Trickle,  divides the program image into pages that are further split into packets while in \todo{transition}. 
+Instead of \todo{nodes autonomously advertising its own}  version like Trickle, the nodes periodically advertise the newest pages (only the ones changed from prior version) available to send. 
 Other nodes then request the required pages following a sequential order \cite{1031506}.
 
 Deluge solves several problems in network programming. 
@@ -535,26 +537,26 @@ The simulation environment possessed the ability to observe the software update 
 The raw data generated from simulation logs were processed using an semi-automated scheme that processed the raw data using a bash script.
 This semi-processed data were further processed with a programme written in cpp to make them suitable for simple mathematical calculations.
 Then these data were related and  analysed using a spreadsheet programme to produce the IWS.
-
+\notedme{There is too much `uninteresting' detail in this section. You're not saying why any of the above steps is a contribution---if it's what anyone else would have done, I'd talk about what the steps _achieve_, not the steps themselves. I think there's a risk you will invite rejection from reviewers: they will not think it acceptable that you feel this is worth mentioning in the current form. Mentioning use of spreadsheets will sound inefficient to these folk... and in any case saying a ``cpp'' program is a concern---a common (but not universal) file extension is not the same thing as the name of the language...}
 
 \subsection*{Simulation Environment}
 \label{subsec:sim_env}
 The IDS requires deluge protocol to be able to report the time of executing  a new version of its software.
-The related techniques and design issues have been elaborately described in Section-!\ref{sec:des}.
-Deluge protocol was originally implemented in TinyOS.
-The protocol has been ported to other embedded operating systems including Contiki.
-We used deluge protocol implemented in `Contiki: The Open Source OS for the Internet of Things' for our experiments. 
+The related techniques and design issues have been elaborately described in Section~\ref{sec:des}.
+The Deluge protocol was originally implemented in TinyOS.
+The protocol has been ported to other embedded operating systems including Contiki. \notedme{This is unnecessary repetition.}
+We used deluge protocol implemented in `Contiki: The Open Source OS for the Internet of Things' for our experiments. \notedme{Just call it Contiki. What benefit is gained by including their tag-line?}
 %[So this will eventually need citation and a self-contained description.]
 We installed Contiki v2.7 on a system running on Ubuntu 12.04.
 `Cooja', a network simulator for Contiki, was used to simulate the software update pattern associated with Deluge protocol. 
 We also used a plugin for Contiki called Mobility to aid our experiential setup.
-Although the plugin was designed to deal with positions over time for the nodes in the simulation, we used it to load the exact location of the sensor motes into the `Cooja' simulator.. 
+Although the plugin was designed to deal with positions over time for the nodes in the simulation, we used it to load the exact location of the sensor motes into the `Cooja' simulator. 
 
 
 \subsection*{Design of Experiments}
 \label{subsec:exp_des}
 
-The simulations were carried out as information gathering exercises.
+The simulations were carried out as information gathering exercises.\notedme{drop---obvious, no?}
 They were carefully designed and planned with a view to evaluating the proposed IDS in different settings.
 Experiments on various topologies described in the following subsection were carried out for completeness of the exercise.
 
@@ -572,6 +574,7 @@ Results obtained from all these simulations were utilised to model the expected 
 The effects of the proposed IDS were tested in different topologies, which ranges from being very simple to complex ones, were tested for thoroughness. 
 The topologies were designed basing on different design considerations that were established using number of trial and error test runs.
 We used several python scripts to place the motes according to specific requirements like shape, distance, range and power level. 
+\notedme{I'd not mention Python (NB: capital `P').}
 
 \begin{table*}[t!]
 \centering
@@ -588,22 +591,25 @@ We used several python scripts to place the motes according to specific requirem
 \end{table*}
 
 The shape of the experiential topologies were designed as linear, circular, elliptical, double rings, wide line, grid, tree and other random topologies.
-The names of the topologies here indicate that in each case the motes were deployed along the circumference of the geometrical shape that enabled packet propagation to take place according to a designed fashion.
+The names of the topologies here indicate that in each case the motes were deployed along the circumference of the geometrical shape that enabled packet propagation to take place according to a designed fashion.\notedme{drop---too obvious to justify saying.}
 In each topology, minimum 20 nodes were deployed for a test to take place. 
 More motes were necessary to replicate certain topologies.
 Table-\ref{tab:topos} shows the number of motes that were used in experiments in corresponding topological  deployments.
-The motes were carefully placed at a distance of 30---35 meter along the circumference of the intended topological shape. 
+The motes were carefully placed at a distance of 30--35 meter along the circumference of the intended topological shape. % <dme> en-dash for number ranges, not em-dash
 This distance was found necessary to allow  multiple transmission paths to all the motes along the desired directions . 
 This was further augmented with other constraints based on topological specification.
 For most experiments, the radio transmission power level was set at 100\% which has an approximate maximum effective transmission range of 50 meter and is able to interfere other motes upto 100 meter away.
 The Owheo WSN topology was additionally tested at 50\%  power level to identify the effects of power level on the IDS
-
+\notedme{That makes it sound like you're studying the power-level effect: you can't do that thoroughly from two values. Rephrase to make it clear it was a quick test to see what difference the parameter change made.}
 
 
 \subsection*{Procedure}
 \label{subsec:proc}
 
-Experiment procedure  was a combination of several well defined activities  that included running simulation, analysing system log and processing data to arrive at a conclusion. 
+Experiment procedure  was a combination of several well defined activities 
+\notedme{Remove all text that tries to ``talk up'' the results or the quality of the methodology. It is dangerous: reviewers will be irritated that you're trying to suggest what their reaction should be, rather than you letting them form their own views. Be very careful about attempting to provide your pre-judgement of your own material to a revewier---such attempts will almost always completely backfire.}
+%
+that included running simulation, analysing system log and processing data to arrive at a conclusion. 
 
 
 \subsubsection*{Processing  of Individual Test Run}
