@@ -117,3 +117,5 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+bare_conf.upa
+bare_conf.upb
